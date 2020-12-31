@@ -1,0 +1,48 @@
+#READ THE WIKI BEFORE CREATING A MACHINE!
+EXAMPLE_MACHINE:
+  machine-name: "&bExample Machine"
+  machine-lore: "&7This is an example machine &7I make cool things!"
+  block-type: SMOKER
+  progress-bar-item: FLINT_AND_STEEL
+  stats:
+    energy-consumption: 16
+    energy-buffer: 64
+  crafting-recipe:
+    1:
+      type: VANILLA
+      id: IRON_BLOCK
+    2:
+      type: NONE
+      id: N/A
+    3:
+      type: VANILLA
+      id: IRON_BLOCK
+    4:
+      type: VANILLA
+      id: IRON_BLOCK
+    5:
+      type: VANILLA
+      id: IRON_BLOCK
+    6:
+      type: VANILLA
+      id: IRON_BLOCK
+    7:
+      type: VANILLA
+      id: IRON_BLOCK
+    8:
+      type: VANILLA
+      id: IRON_BLOCK
+    9:
+      type: VANILLA
+      id: IRON_BLOCK
+  recipes:
+    1:
+      speed-in-seconds: 5
+      input:
+        type: VANILLA
+        id: IRON_INGOT
+        amount: 12
+      output:
+        type: SLIMEFUN
+        id: SYNTHETIC_DIAMOND
+        amount: 1
