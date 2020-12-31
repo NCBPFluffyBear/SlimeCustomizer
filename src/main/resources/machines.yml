@@ -1,8 +1,8 @@
 #READ THE WIKI BEFORE CREATING A MACHINE!
 EXAMPLE_MACHINE:
   machine-name: "&bExample Machine"
-  machine-lore: "&7This is an example machine &7I make cool things!"
-  block-type: SMOKER
+  machine-lore: "&7This is an example machine!"
+  block-type: FURNACE
   progress-bar-item: FLINT_AND_STEEL
   stats:
     energy-consumption: 16
@@ -21,8 +21,8 @@ EXAMPLE_MACHINE:
       type: VANILLA
       id: IRON_BLOCK
     5:
-      type: VANILLA
-      id: IRON_BLOCK
+      type: SLIMEFUN
+      id: SMALL_CAPACITOR
     6:
       type: VANILLA
       id: IRON_BLOCK
@@ -41,8 +41,18 @@ EXAMPLE_MACHINE:
       input:
         type: VANILLA
         id: IRON_INGOT
-        amount: 12
+        amount: 9
+      output:
+        type: VANILLA
+        id: IRON_BLOCK
+        amount: 1
+    2:
+      speed-in-seconds: 5
+      input:
+        type: SLIMEFUN
+        id: GOLD_24K
+        amount: 9
       output:
         type: SLIMEFUN
-        id: SYNTHETIC_DIAMOND
+        id: GOLD_24K_BLOCK
         amount: 1

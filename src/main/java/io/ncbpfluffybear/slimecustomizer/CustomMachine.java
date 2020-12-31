@@ -1,5 +1,6 @@
-package io.ncbpfluffybear.customslimefun;
+package io.ncbpfluffybear.slimecustomizer;
 
+import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import me.mrCookieSlime.CSCoreLibPlugin.cscorelib2.collections.Pair;
 import me.mrCookieSlime.CSCoreLibPlugin.cscorelib2.item.CustomItem;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -16,13 +17,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class CustomMachine extends AContainer {
+public class CustomMachine extends AContainer implements RecipeDisplayItem {
 
-    String id;
-    ItemStack progressItem;
-    int energyConsumption;
-    int energyBuffer;
-    HashMap<Pair<ItemStack, ItemStack>, Integer> customRecipes;
+    private final String id;
+    private final ItemStack progressItem;
+    private final int energyConsumption;
+    private final int energyBuffer;
+    private final HashMap<Pair<ItemStack, ItemStack>, Integer> customRecipes;
 
     public CustomMachine(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,
                          String id, Material progressItem, int energyConsumption, int energyBuffer,
@@ -35,7 +36,10 @@ public class CustomMachine extends AContainer {
         this.energyBuffer = energyBuffer;
         this.customRecipes = customRecipes;
 
-        registerBlockHandler(getId(), (p, b, stack, reason) -> {
+        // Gets called in AContainer, but customRecipes is null at that time.
+        registerDefaultRecipes();
+
+        registerBlockHandler(id, (p, b, stack, reason) -> {
             BlockMenu inv = BlockStorage.getInventory(b);
 
             if (inv != null) {
@@ -69,8 +73,14 @@ public class CustomMachine extends AContainer {
 
     @Override
     protected void registerDefaultRecipes() {
-        customRecipes.forEach((recipe, time) -> registerRecipe(time,
-            recipe.getFirstValue().clone(), recipe.getSecondValue().clone()));
+        if (customRecipes == null) {
+            return;
+        }
+
+        customRecipes.forEach((recipe, time) ->
+            registerRecipe(time, recipe.getFirstValue().clone(), recipe.getSecondValue().clone())
+        );
+
     }
 
     @Override

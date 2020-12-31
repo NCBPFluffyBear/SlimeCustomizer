@@ -4,7 +4,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.ncbpfluffybear</groupId>
-    <artifactId>CustomSlimefun</artifactId>
+    <artifactId>SlimeCustomizer</artifactId>
     <version>1.0.0</version>
 
     <properties>
@@ -28,6 +28,11 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+
+        <repository>
+            <id>bstats-repo</id>
+            <url>https://repo.codemc.org/repository/maven-public</url>
+        </repository>
     </repositories>
 
     <build>
@@ -44,6 +49,44 @@
                 </includes>
             </resource>
         </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.bstats.bukkit</pattern>
+                            <shadedPattern>io.ncbpfluffybear.slimecustomizer.bstats</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.github.Slimefun-Addon-Community</pattern>
+                            <shadedPattern>io.ncbpfluffybear.slimecustomizer.Slimefun-Addon-Community</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <dependencies>
@@ -88,6 +131,13 @@
             <groupId>com.github.Slimefun-Addon-Community</groupId>
             <artifactId>extrautils</artifactId>
             <version>cea1be6550</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>1.8</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

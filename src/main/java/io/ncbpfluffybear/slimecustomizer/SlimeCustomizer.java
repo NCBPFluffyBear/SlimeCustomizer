@@ -1,4 +1,4 @@
-package io.ncbpfluffybear.customslimefun;
+package io.ncbpfluffybear.slimecustomizer;
 
 import dev.j3fftw.extrautils.utils.LoreBuilderDynamic;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
@@ -9,6 +9,8 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.cscorelib2.config.Config;
 import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
+import me.mrCookieSlime.Slimefun.cscorelib2.updater.GitHubBuildsUpdater;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -21,27 +23,30 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-public class CustomSlimefun extends JavaPlugin implements SlimefunAddon {
+public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
 
-    public static CustomSlimefun instance;
+    public static SlimeCustomizer instance;
 
     @Override
     public void onEnable() {
-
         instance = this;
 
         // Read something from your config.yml
         Config cfg = new Config(this);
         Config machines = new Config(this, "machines.yml");
 
-        if (cfg.getBoolean("options.auto-update")) {
-            // You could start an Auto-Updater for example
+        if (cfg.getBoolean("options.auto-update") && getDescription().getVersion().startsWith("DEV - ")) {
+            new GitHubBuildsUpdater(this, getFile(), "NCBPFluffyBear/SlimeCustomizer/master/").start();
         }
 
-        Category custom_slimefun = new Category(
-            new NamespacedKey(CustomSlimefun.getInstance(), "custom_slimefun"),
-            new CustomItem(Material.REDSTONE_LAMP, "&cCustom Slimefun"));
+        final Metrics metrics = new Metrics(this, 9841);
 
+        /* Category */
+        Category slime_customizer = new Category(
+            new NamespacedKey(SlimeCustomizer.getInstance(), "slime_customizer"),
+            new CustomItem(Material.REDSTONE_LAMP, "&cSlimeCustomizer"));
+
+        /* File generation */
         final File machinesFile = new File(getInstance().getDataFolder(), "machines.yml");
         if (!machinesFile.exists()) {
             try {
@@ -51,27 +56,35 @@ public class CustomSlimefun extends JavaPlugin implements SlimefunAddon {
             }
         }
 
+        /* Machine registration */
         for (String machineKey : machines.getKeys()) {
+            if (machineKey.equals("EXAMPLE_MACHINE")) {
+                getInstance().getLogger().log(Level.WARNING, "Your machines.yml file still contains the example machine! " +
+                    "Did you forget to set up the plugin?");
+            }
 
             ItemStack[] ingredients = new ItemStack[9];
 
-            // Validate the config
+            /* Validating the machine */
             Material block = Material.getMaterial(machines.getString(machineKey + ".block-type"));
             Material progressItem = Material.getMaterial(machines.getString(machineKey + ".progress-bar-item"));
             int energyConsumption;
             int energyBuffer;
             HashMap<Pair<ItemStack, ItemStack>, Integer> customRecipe = new HashMap<>();
 
+            /* Machine block type */
             if (block == null || !block.isBlock()) {
                 disable("The block-type for " + machineKey + " MUST be a block!");
                 return;
             }
 
+            /* Progress bar type */
             if (progressItem == null) {
                 disable("The progress-bar-item for " + machineKey + " is not a valid vanilla ID!");
                 return;
             }
 
+            /* Energy consumption and Energy buffer */
             try {
                 energyConsumption = Integer.parseInt(machines.getString(machineKey + ".stats.energy-consumption"));
                 energyBuffer = Integer.parseInt(machines.getString(machineKey + ".stats.energy-buffer"));
@@ -85,6 +98,7 @@ public class CustomSlimefun extends JavaPlugin implements SlimefunAddon {
                 return;
             }
 
+            /* Crafting recipe */
             for (int i = 0; i < 9; i++) {
                 String path = machineKey + ".crafting-recipe";
                 int configIndex = i + 1;
@@ -116,13 +130,14 @@ public class CustomSlimefun extends JavaPlugin implements SlimefunAddon {
                 }
             }
 
+            /* Machine recipes */
             for (String recipeKey : machines.getKeys(machineKey + ".recipes")) {
-                String path = machineKey + ".recipes" + recipeKey;
+                String path = machineKey + ".recipes." + recipeKey;
                 int speed;
                 ItemStack input = null;
                 ItemStack output = null;
 
-                // Validate config
+                /* Speed */
                 try {
                     speed = Integer.parseInt(machines.getString(path + ".speed-in-seconds"));
                 } catch (NumberFormatException e) {
@@ -149,6 +164,23 @@ public class CustomSlimefun extends JavaPlugin implements SlimefunAddon {
 
                     String type = machines.getString(path + "." + slot + ".type");
                     String material = machines.getString(path + "." + slot + ".id");
+                    int amount;
+
+                    /* Validate amount */
+                    try {
+                        amount = Integer.parseInt(machines.getString(path + "." + slot + ".amount"));
+                    } catch (NumberFormatException e) {
+                        disable("The amount of " + slot + "s for recipe " + recipeKey + " for " + machineKey
+                            + " must be a positive integer!");
+                        return;
+                    }
+
+                    if (amount < 0) {
+                        disable("The amount of " + slot + "s for recipe " + recipeKey + " for " + machineKey
+                            + " must be a positive integer!");
+                        return;
+                    }
+
                     if (type.equalsIgnoreCase("VANILLA")) {
                         Material vanillaMat = Material.getMaterial(material);
                         if (vanillaMat == null) {
@@ -158,8 +190,12 @@ public class CustomSlimefun extends JavaPlugin implements SlimefunAddon {
                         } else {
                             if (i == 0) {
                                 input = new ItemStack(vanillaMat);
+                                input.setAmount(amount);
+                                checkExceedsStackSize(input, slot, machineKey, recipeKey);
                             } else {
                                 output = new ItemStack(vanillaMat);
+                                output.setAmount(amount);
+                                checkExceedsStackSize(output, slot, machineKey, recipeKey);
                             }
                         }
                     } else if (type.equalsIgnoreCase("SLIMEFUN")) {
@@ -170,8 +206,12 @@ public class CustomSlimefun extends JavaPlugin implements SlimefunAddon {
                         } else {
                             if (i == 0) {
                                 input = sfMat.getItem().clone();
+                                input.setAmount(amount);
+                                checkExceedsStackSize(input, slot, machineKey, recipeKey);
                             } else {
                                 output = sfMat.getItem().clone();
+                                output.setAmount(amount);
+                                checkExceedsStackSize(output, slot, machineKey, recipeKey);
                             }
                         }
                     } else {
@@ -193,7 +233,7 @@ public class CustomSlimefun extends JavaPlugin implements SlimefunAddon {
                 LoreBuilderDynamic.powerPerTick(energyConsumption)
             );
 
-            new CustomMachine(custom_slimefun, tempStack, RecipeType.ENHANCED_CRAFTING_TABLE, ingredients,
+            new CustomMachine(slime_customizer, tempStack, RecipeType.ENHANCED_CRAFTING_TABLE, ingredients,
                 machineKey, progressItem, energyConsumption, energyBuffer, customRecipe).register(this);
         }
     }
@@ -213,13 +253,20 @@ public class CustomSlimefun extends JavaPlugin implements SlimefunAddon {
         return this;
     }
 
-    private static CustomSlimefun getInstance() {
+    private static SlimeCustomizer getInstance() {
         return instance;
     }
 
     private void disable(String reason) {
         getLogger().log(Level.SEVERE, reason);
         Bukkit.getPluginManager().disablePlugin(this);
+    }
+
+    private void checkExceedsStackSize(ItemStack item, String slot, String machineKey, String recipeKey) {
+         if (item.getAmount() > item.getMaxStackSize()) {
+             disable("The " + slot + "ingredient for recipe" + recipeKey + " for " + machineKey
+                 + " has a max stack size of " + item.getMaxStackSize() + "!");
+         }
     }
 
 }

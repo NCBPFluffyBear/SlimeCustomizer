@@ -1,5 +1,5 @@
 ## CHANGE this to the name of your plugin.
-name: CustomSlimefun
+name: SlimeCustomizer
 
 ## CHANGE this to your username.
 author: NCBPFluffyBear
@@ -8,10 +8,10 @@ author: NCBPFluffyBear
 description: A generic Slimefun4-Addon
 
 ## CHANGE this to the path of the class that extends JavaPlugin.
-main: io.ncbpfluffybear.customslimefun.CustomSlimefun
+main: io.ncbpfluffybear.slimecustomizer.SlimeCustomizer
 
 ## You can change this to link to your website or repository. You can also remove this line if you want to.
-website: https://github.com/NCBPFluffyBear/CustomSlimefun
+website: https://github.com/NCBPFluffyBear/SlimeCustomizer
 
 ## This is required and marks Slimefun as a plugin dependency.
 depend: [Slimefun]
