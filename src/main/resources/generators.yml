@@ -1,0 +1,58 @@
+#READ THE WIKI BEFORE CREATING A MACHINE!
+EXAMPLE_GENERATOR:
+  generator-name: "&bExample Generator"
+  generator-lore: "&7This is an example generator!"
+  block-type: SKULLe707c7f6c3a056a377d4120028405fdd09acfcd5ae804bfde0f653be866afe39
+  progress-bar-item: FLINT_AND_STEEL
+  stats:
+    energy-production: 16
+    energy-buffer: 64
+  crafting-recipe:
+    1:
+      type: VANILLA
+      id: IRON_BLOCK
+    2:
+      type: NONE
+      id: N/A
+    3:
+      type: VANILLA
+      id: IRON_BLOCK
+    4:
+      type: VANILLA
+      id: IRON_BLOCK
+    5:
+      type: SLIMEFUN
+      id: COAL_GENERATOR
+    6:
+      type: VANILLA
+      id: IRON_BLOCK
+    7:
+      type: VANILLA
+      id: IRON_BLOCK
+    8:
+      type: VANILLA
+      id: IRON_BLOCK
+    9:
+      type: VANILLA
+      id: IRON_BLOCK
+  recipes:
+    1:
+      time-in-seconds: 5
+      input:
+        type: VANILLA
+        id: SPRUCE_SIGN
+        amount: 1
+      output:
+        type: NONE
+        id: N/A
+        amount: N/A
+    2:
+      time-in-seconds: 10
+      input:
+        type: VANILLA
+        id: BEDROCK
+        amount: 1
+      output:
+        type: VANILLA
+        id: BIRCH_PLANKS
+        amount: 1

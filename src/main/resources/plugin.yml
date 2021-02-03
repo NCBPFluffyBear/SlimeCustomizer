@@ -5,7 +5,7 @@ name: SlimeCustomizer
 author: NCBPFluffyBear
 
 ## CHANGE this to a meaninful but short description of your plugin.
-description: A generic Slimefun4-Addon
+description: A Slimefun4 addon that allows the creation of items through simple configuration files
 
 ## CHANGE this to the path of the class that extends JavaPlugin.
 main: io.ncbpfluffybear.slimecustomizer.SlimeCustomizer
