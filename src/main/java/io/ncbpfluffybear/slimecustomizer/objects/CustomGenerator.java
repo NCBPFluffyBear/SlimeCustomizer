@@ -1,4 +1,4 @@
-package io.ncbpfluffybear.slimecustomizer;
+package io.ncbpfluffybear.slimecustomizer.objects;
 
 import dev.j3fftw.extrautils.utils.LoreBuilderDynamic;
 import dev.j3fftw.extrautils.utils.Utils;
@@ -16,9 +16,14 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The {@link CustomGenerator} class is a generified
+ * {@link AGenerator}.
+ *
+ * @author NCBPFluffyBear
+ */
 public class CustomGenerator extends AGenerator {
 
-    private final String id;
     private final ItemStack progressItem;
     private final int energyProduction;
     private final int energyBuffer;
@@ -29,7 +34,6 @@ public class CustomGenerator extends AGenerator {
                            List<MachineFuel> customRecipes) {
         super(category, item, recipeType, recipe);
 
-        this.id = id;
         this.progressItem = new CustomItem(progressItem, "");
         this.energyProduction = energyProduction;
         this.energyBuffer = energyBuffer;

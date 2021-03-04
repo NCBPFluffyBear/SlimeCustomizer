@@ -1,12 +1,15 @@
 #READ THE WIKI BEFORE CREATING A MACHINE!
 EXAMPLE_MACHINE:
+  category: slime_customizer
   machine-name: "&bExample Machine"
-  machine-lore: "&7This is an example machine!"
+  machine-lore:
+  - "&7This is an example machine!"
   block-type: FURNACE
   progress-bar-item: FLINT_AND_STEEL
   stats:
     energy-consumption: 16
     energy-buffer: 64
+  crafting-recipe-type: ENHANCED_CRAFTING_TABLE
   crafting-recipe:
     1:
       type: VANILLA
@@ -39,20 +42,40 @@ EXAMPLE_MACHINE:
     1:
       speed-in-seconds: 5
       input:
-        type: VANILLA
-        id: IRON_INGOT
-        amount: 9
+        1:
+          type: VANILLA
+          id: IRON_INGOT
+          amount: 9
+        2:
+          type: NONE
+          id: N/A
+          amount: 1
       output:
-        type: VANILLA
-        id: IRON_BLOCK
-        amount: 1
-    2:
-      speed-in-seconds: 5
-      input:
-        type: SLIMEFUN
-        id: GOLD_24K
-        amount: 9
-      output:
-        type: SLIMEFUN
-        id: GOLD_24K_BLOCK
-        amount: 1
+        1:
+          type: VANILLA
+          id: IRON_BLOCK
+          amount: 1
+        2:
+          type: NONE
+          id: N/A
+          amount: 1
+      2:
+        speed-in-seconds: 5
+        input:
+          1:
+            type: SLIMEFUN
+            id: GOLD_24K
+            amount: 9
+          2:
+            type: NONE
+            id: N/A
+            amount: 1
+        output:
+          1:
+            type: SLIMEFUN
+            id: GOLD_24K_BLOCK
+            amount: 1
+          2:
+            type: NONE
+            id: N/A
+            amount: 1

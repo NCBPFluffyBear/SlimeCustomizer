@@ -62,8 +62,8 @@
                             <shadedPattern>io.ncbpfluffybear.slimecustomizer.bstats</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>com.github.Slimefun-Addon-Community</pattern>
-                            <shadedPattern>io.ncbpfluffybear.slimecustomizer.Slimefun-Addon-Community</shadedPattern>
+                            <pattern>dev.j3fftw.extrautils</pattern>
+                            <shadedPattern>io.ncbpfluffybear.slimecustomizer.extrautils</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -105,6 +105,13 @@
             <artifactId>bstats-bukkit</artifactId>
             <version>1.8</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.16</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

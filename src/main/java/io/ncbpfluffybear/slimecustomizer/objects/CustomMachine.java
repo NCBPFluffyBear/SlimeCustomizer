@@ -1,6 +1,7 @@
-package io.ncbpfluffybear.slimecustomizer;
+package io.ncbpfluffybear.slimecustomizer.objects;
 
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
+import io.ncbpfluffybear.slimecustomizer.Utils;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
@@ -17,17 +18,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
+/**
+ * The {@link CustomMachine} class is a generified
+ * {@link AContainer}.
+ *
+ * @author NCBPFluffyBear
+ */
 public class CustomMachine extends AContainer implements RecipeDisplayItem {
+
+    public static final ItemStack MULTI_INPUT_ITEM = new CustomItem(
+        Material.LIME_STAINED_GLASS_PANE, "&aMultiple Inputs", "", "&7> Click to view the items");
+    public static final ItemStack MULTI_OUTPUT_ITEM = new CustomItem(
+        Material.LIME_STAINED_GLASS_PANE, "&aMultiple Outputs", "", "&7> Click to view the items");
 
     private final String id;
     private final ItemStack progressItem;
     private final int energyConsumption;
     private final int energyBuffer;
-    private final HashMap<Pair<ItemStack, ItemStack>, Integer> customRecipes;
+    private final HashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes;
 
     public CustomMachine(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,
                          String id, Material progressItem, int energyConsumption, int energyBuffer,
-                         HashMap<Pair<ItemStack, ItemStack>, Integer> customRecipes) {
+                         HashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes) {
         super(category, item, recipeType, recipe);
 
         this.id = id;
@@ -37,7 +50,7 @@ public class CustomMachine extends AContainer implements RecipeDisplayItem {
         this.customRecipes = customRecipes;
 
         // Gets called in AContainer, but customRecipes is null at that time.
-        registerDefaultRecipes();
+        // registerDefaultRecipes();
 
         registerBlockHandler(id, (p, b, stack, reason) -> {
             BlockMenu inv = BlockStorage.getInventory(b);
@@ -87,9 +100,19 @@ public class CustomMachine extends AContainer implements RecipeDisplayItem {
     public List<ItemStack> getDisplayRecipes() {
         List<ItemStack> displayRecipes = new ArrayList<>(recipes.size() * 2);
 
-        for (MachineRecipe recipe : recipes) {
-            displayRecipes.add(recipe.getInput()[0]);
-            displayRecipes.add(recipe.getOutput()[recipe.getOutput().length - 1]);
+        for (int i = 0; i < recipes.size(); i++) {
+            MachineRecipe recipe = recipes.get(i);
+            if (recipe.getInput().length == 2) {
+                displayRecipes.add(Utils.keyItem(MULTI_INPUT_ITEM.clone(), i));
+            } else {
+                displayRecipes.add(recipe.getInput()[0]);
+            }
+
+            if (recipe.getOutput().length == 2) {
+                displayRecipes.add(Utils.keyItem(MULTI_OUTPUT_ITEM.clone(), i));
+            } else {
+                displayRecipes.add(recipe.getOutput()[0]);
+            }
         }
 
         return displayRecipes;

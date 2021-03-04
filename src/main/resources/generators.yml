@@ -1,12 +1,15 @@
 #READ THE WIKI BEFORE CREATING A MACHINE!
 EXAMPLE_GENERATOR:
+  category: slime_customizer
   generator-name: "&bExample Generator"
-  generator-lore: "&7This is an example generator!"
+  generator-lore:
+  - "&7This is an example generator!"
   block-type: SKULLe707c7f6c3a056a377d4120028405fdd09acfcd5ae804bfde0f653be866afe39
   progress-bar-item: FLINT_AND_STEEL
   stats:
     energy-production: 16
     energy-buffer: 64
+  crafting-recipe-type: ENHANCED_CRAFTING_TABLE
   crafting-recipe:
     1:
       type: VANILLA
