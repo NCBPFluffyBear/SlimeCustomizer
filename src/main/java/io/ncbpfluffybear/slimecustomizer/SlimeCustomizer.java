@@ -1,44 +1,64 @@
 package io.ncbpfluffybear.slimecustomizer;
 
-import dev.j3fftw.extrautils.utils.LoreBuilderDynamic;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
+import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
+import io.ncbpfluffybear.slimecustomizer.objects.SCMenu;
+import io.ncbpfluffybear.slimecustomizer.objects.WindowsExplorerStringComparator;
+import io.ncbpfluffybear.slimecustomizer.registration.Categories;
+import io.ncbpfluffybear.slimecustomizer.registration.Generators;
+import io.ncbpfluffybear.slimecustomizer.registration.Items;
+import io.ncbpfluffybear.slimecustomizer.registration.Machines;
+import lombok.SneakyThrows;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.cscorelib2.collections.Pair;
 import me.mrCookieSlime.Slimefun.cscorelib2.config.Config;
 import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
-import me.mrCookieSlime.Slimefun.cscorelib2.skull.SkullItem;
 import me.mrCookieSlime.Slimefun.cscorelib2.updater.GitHubBuildsUpdater;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * This used to be a smol boi. Now it has grown.
+ *
+ * @author NCBPFluffyBear
+ */
 public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
 
     public static SlimeCustomizer instance;
+    public static File itemsFolder;
+
+    public static HashMap<ItemStack[], Pair<RecipeType, String>> existingRecipes = new HashMap<>();
+    public static HashMap<String, Category> allCategories = new HashMap<>();
 
     @Override
     public void onEnable() {
+
         instance = this;
+        itemsFolder = new File(this.getDataFolder(), "saveditems");
 
         // Read something from your config.yml
         Config cfg = new Config(this);
-        Config machines = new Config(this, "machines.yml");
-        Config generators = new Config(this, "generators.yml");
 
         if (cfg.getBoolean("options.auto-update") && getDescription().getVersion().startsWith("DEV - ")) {
             new GitHubBuildsUpdater(this, getFile(), "NCBPFluffyBear/SlimeCustomizer/master/").start();
@@ -46,12 +66,25 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
 
         final Metrics metrics = new Metrics(this, 9841);
 
-        /* Category */
-        Category slime_customizer = new Category(
-            new NamespacedKey(SlimeCustomizer.getInstance(), "slime_customizer"),
-            new CustomItem(Material.REDSTONE_LAMP, "&cSlimeCustomizer"));
-
         /* File generation */
+        final File categoriesFile = new File(getInstance().getDataFolder(), "categories.yml");
+        if (!categoriesFile.exists()) {
+            try {
+                Files.copy(this.getClass().getResourceAsStream("/categories.yml"), categoriesFile.toPath());
+            } catch (IOException e) {
+                getInstance().getLogger().log(Level.SEVERE, "Failed to copy default categories.yml file", e);
+            }
+        }
+
+        final File itemsFile = new File(getInstance().getDataFolder(), "items.yml");
+        if (!itemsFile.exists()) {
+            try {
+                Files.copy(this.getClass().getResourceAsStream("/items.yml"), itemsFile.toPath());
+            } catch (IOException e) {
+                getInstance().getLogger().log(Level.SEVERE, "Failed to copy default items.yml file", e);
+            }
+        }
+
         final File machinesFile = new File(getInstance().getDataFolder(), "machines.yml");
         if (!machinesFile.exists()) {
             try {
@@ -70,427 +103,220 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
             }
         }
 
-        /* ----------------------------
-           Custom Machine registration
-           ------------------------- */
-        for (String machineKey : machines.getKeys()) {
-            if (machineKey.equals("EXAMPLE_MACHINE")) {
-                getInstance().getLogger().log(Level.WARNING, "Your machines.yml file still contains the example machine! " +
-                    "Did you forget to set up the plugin?");
-            }
-
-            ItemStack[] ingredients = new ItemStack[9];
-
-            /* Validating the machine */
-            String materialString = machines.getString(machineKey + ".block-type").toUpperCase();
-            Material block = Material.getMaterial(materialString);
-            ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-            Material progressItem = Material.getMaterial(machines.getString(machineKey + ".progress-bar-item").toUpperCase());
-            int energyConsumption;
-            int energyBuffer;
-            HashMap<Pair<ItemStack, ItemStack>, Integer> customRecipe = new HashMap<>();
-
-            /* Machine block type */
-            if ((block == null || !block.isBlock()) && !materialString.startsWith("SKULL")) {
-                disable("The block-type for " + machineKey + " MUST be a block!");
-                return;
-            }
-
-            if (materialString.startsWith("SKULL")) {
-                skull = new CustomItem(SkullItem.fromHash(materialString.replace("SKULL", "")));
-            }
-
-            /* Progress bar type */
-            if (progressItem == null) {
-                disable("The progress-bar-item for " + machineKey + " is not a valid vanilla ID!");
-                return;
-            }
-
-            /* Energy consumption and Energy buffer */
+        if (!itemsFolder.exists()) {
             try {
-                energyConsumption = Integer.parseInt(machines.getString(machineKey + ".stats.energy-consumption"));
-                energyBuffer = Integer.parseInt(machines.getString(machineKey + ".stats.energy-buffer"));
-            } catch (NumberFormatException e) {
-                disable("The energy-consumption and energy-buffer for " + machineKey + " must be a positive integer!");
-                return;
+                Files.createDirectory(itemsFolder.toPath());
+            } catch (IOException e) {
+                getInstance().getLogger().log(Level.SEVERE, "Failed to create saveditems folder", e);
             }
-
-            if (energyConsumption < 0 || energyBuffer < 0) {
-                disable("The energy-consumption and energy-buffer for " + machineKey + " must be a positive integer!");
-                return;
-            }
-
-            /* Crafting recipe */
-            for (int i = 0; i < 9; i++) {
-                String path = machineKey + ".crafting-recipe";
-                int configIndex = i + 1;
-                // Shift recipe index up 1 so it's easier for the user to read config
-                String type = machines.getString(path + "." + configIndex + ".type").toUpperCase();
-                String material = machines.getString(path + "." + configIndex + ".id").toUpperCase();
-                if (type.equalsIgnoreCase("NONE")) {
-                    ingredients[i] = null;
-                } else if (type.equalsIgnoreCase("VANILLA")) {
-                    Material vanillaMat = Material.getMaterial(material);
-                    if (vanillaMat == null) {
-                        disable("Crafting ingredient " + configIndex + " for " + machineKey + " is not a valid " +
-                            "vanilla ID!");
-                        return;
-                    } else {
-                        ingredients[i] = new ItemStack(vanillaMat);
-                    }
-                } else if (type.equalsIgnoreCase("SLIMEFUN")) {
-                    SlimefunItem sfMat = SlimefunItem.getByID(material);
-                    if (sfMat == null) {
-                        disable("Crafting ingredient " + configIndex + " for " + machineKey
-                            + " is not a valid Slimefun ID!");
-                    } else {
-                        ingredients[i] = sfMat.getItem().clone();
-                    }
-                } else {
-                    disable("Crafting ingredient " + configIndex + " for " + machineKey
-                        + " can only have a type of VANILLA, SLIMEFUN, or NONE!");
-                }
-            }
-
-            /* Machine recipes */
-            for (String recipeKey : machines.getKeys(machineKey + ".recipes")) {
-                String path = machineKey + ".recipes." + recipeKey;
-                int speed;
-                ItemStack input = null;
-                ItemStack output = null;
-
-                /* Speed */
-                try {
-                    speed = Integer.parseInt(machines.getString(path + ".speed-in-seconds"));
-                } catch (NumberFormatException e) {
-                    disable("The speed-in-seconds for recipe " + recipeKey + " for " + machineKey
-                        + " must be a positive integer!");
-                    return;
-                }
-
-                if (speed < 0) {
-                    disable("The speed-in-seconds for recipe " + recipeKey + " for " + machineKey
-                        + " must be a positive integer!");
-                    return;
-                }
-
-                for (int i = 0; i < 2; i++) {
-
-                    // Run this 2 times for input/output
-                    String slot;
-                    if (i == 0) {
-                        slot = "input";
-                    } else {
-                        slot = "output";
-                    }
-
-                    String type = machines.getString(path + "." + slot + ".type").toUpperCase();
-                    String material = machines.getString(path + "." + slot + ".id").toUpperCase();
-                    int amount;
-
-                    /* Validate amount */
-                    try {
-                        amount = Integer.parseInt(machines.getString(path + "." + slot + ".amount"));
-                    } catch (NumberFormatException e) {
-                        disable("The amount of " + slot + "s for recipe " + recipeKey + " for " + machineKey
-                            + " must be a positive integer!");
-                        return;
-                    }
-
-                    if (amount < 0) {
-                        disable("The amount of " + slot + "s for recipe " + recipeKey + " for " + machineKey
-                            + " must be a positive integer!");
-                        return;
-                    }
-
-                    if (type.equalsIgnoreCase("VANILLA")) {
-                        Material vanillaMat = Material.getMaterial(material);
-                        if (vanillaMat == null) {
-                            disable("The " + slot + "ingredient for recipe" + recipeKey + " for " + machineKey
-                                + " is not a valid vanilla ID!");
-                            return;
-                        } else {
-                            if (i == 0) {
-                                input = new ItemStack(vanillaMat);
-                                input.setAmount(amount);
-                                checkExceedsStackSize(input, slot, machineKey, recipeKey);
-                            } else {
-                                output = new ItemStack(vanillaMat);
-                                output.setAmount(amount);
-                                checkExceedsStackSize(output, slot, machineKey, recipeKey);
-                            }
-                        }
-                    } else if (type.equalsIgnoreCase("SLIMEFUN")) {
-                        SlimefunItem sfMat = SlimefunItem.getByID(material);
-                        if (sfMat == null) {
-                            disable("The " + slot + " ingredient for recipe" + recipeKey + " for " + machineKey
-                                + " is not a valid Slimefun ID!");
-                        } else {
-                            if (i == 0) {
-                                input = sfMat.getItem().clone();
-                                input.setAmount(amount);
-                                checkExceedsStackSize(input, slot, machineKey, recipeKey);
-                            } else {
-                                output = sfMat.getItem().clone();
-                                output.setAmount(amount);
-                                checkExceedsStackSize(output, slot, machineKey, recipeKey);
-                            }
-                        }
-                    } else {
-                        disable("The " + slot + " ingredient type for recipe" + recipeKey + " for " + machineKey
-                            + " can only be VANILLA or SLIMEFUN!");
-                    }
-                }
-
-                customRecipe.put(new Pair<>(input, output), speed);
-
-            }
-
-            SlimefunItemStack tempStack;
-
-            if (block != null) {
-                tempStack = new SlimefunItemStack(machineKey,
-                    block,
-                    machines.getString(machineKey + ".machine-name"),
-                    machines.getString(machineKey + ".machine-lore"),
-                    "",
-                    "&bMachine",
-                    LoreBuilderDynamic.powerBuffer(energyBuffer),
-                    LoreBuilderDynamic.powerPerTick(energyConsumption)
-                );
-            } else {
-                tempStack = new SlimefunItemStack(machineKey,
-                    skull,
-                    machines.getString(machineKey + ".machine-name"),
-                    machines.getString(machineKey + ".machine-lore"),
-                    "",
-                    "&bMachine",
-                    LoreBuilderDynamic.powerBuffer(energyBuffer),
-                    LoreBuilderDynamic.powerPerTick(energyConsumption)
-                );
-            }
-
-            new CustomMachine(slime_customizer, tempStack, RecipeType.ENHANCED_CRAFTING_TABLE, ingredients,
-                machineKey, progressItem, energyConsumption, energyBuffer, customRecipe).register(this);
         }
 
-        /* ----------------------------
-          Custom Generator registration
-          --------------------------- */
-        for (String generatorKey : generators.getKeys()) {
-            if (generatorKey.equals("EXAMPLE_GENERATOR")) {
-                getInstance().getLogger().log(Level.WARNING, "Your generators.yml file still contains the example generator! " +
-                    "Did you forget to set up the plugin?");
+        Config categories = new Config(this, "categories.yml");
+        Config items = new Config(this, "items.yml");
+        Config machines = new Config(this, "machines.yml");
+        Config generators = new Config(this, "generators.yml");
+
+        this.getCommand("slimecustomizer").setTabCompleter(new SCTabCompleter());
+
+        Bukkit.getLogger().log(Level.INFO, "[SlimeCustomizer] " + ChatColor.BLUE + "Setting up custom stuff...");
+        if (!Categories.register(categories)) {return;}
+        if (!Items.register(items)) {return;}
+        if (!Machines.register(machines)) {return;}
+        if (!Generators.register(generators)) {return;}
+        Bukkit.getPluginManager().registerEvents(new Events(), instance);
+    }
+
+    @SneakyThrows
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length == 0 && sender instanceof Player) {
+            Utils.send(sender, "&eAll commands can be found at &9" + Links.COMMANDS);
+        } else if (args[0].equals("saveitem") && sender instanceof Player) {
+            Player p = (Player) sender;
+            if (!Utils.checkPermission(p, "slimecustomizer.admin")) {
+                return true;
+            }
+            int id = 0;
+            File itemFile = new File(getInstance().getDataFolder().getPath() + "/saveditems", id + ".yml");
+            while (itemFile.exists()) {
+                id++;
+                itemFile = new File(getInstance().getDataFolder().getPath() + "/saveditems", id + ".yml");
             }
 
-            ItemStack[] ingredients = new ItemStack[9];
-
-            /* Validating the machine */
-            String materialString = generators.getString(generatorKey + ".block-type").toUpperCase();
-            Material block = Material.getMaterial(materialString);
-            ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
-            Material progressItem = Material.getMaterial(generators.getString(generatorKey + ".progress-bar-item").toUpperCase());
-            int energyProduction;
-            int energyBuffer;
-            List<MachineFuel> customRecipe = new ArrayList<>();
-
-            /* Generator block type */
-            if ((block == null || !block.isBlock()) && !materialString.startsWith("SKULL")) {
-                disable("The block-type for " + generatorKey + " MUST be a block!");
-                return;
+            if (!itemFile.createNewFile()) {
+                getInstance().getLogger().log(Level.SEVERE, "Failed to create config for item " + id);
             }
 
-            if (materialString.startsWith("SKULL")) {
-                skull = new CustomItem(SkullItem.fromHash(materialString.replace("SKULL", "")));
+            Config itemFileConfig = new Config(this, "saveditems/" + id + ".yml");
+            itemFileConfig.setValue("item", p.getInventory().getItemInMainHand());
+            itemFileConfig.save();
+            Utils.send(p, "&eYour item has been saved to " + itemFile.getPath() + ". Please refer to " +
+                "&9" + Links.USING_CUSTOM_ITEMS);
+
+        } else if (args[0].equals("give") && args.length > 2 && sender instanceof Player) {
+            Player p = (Player) sender;
+            if (!Utils.checkPermission(p, "slimecustomizer.admin")) {
+                return true;
             }
 
-            /* Progress bar type */
-            if (progressItem == null) {
-                disable("The progress-bar-item for " + generatorKey + " is not a valid vanilla ID!");
-                return;
+            Player target = Bukkit.getPlayer(args[1]);
+            if (target == null) {
+                Utils.send(p, "&cThat player could not be found!");
+                return true;
             }
 
-            /* Energy consumption and Energy buffer */
-            try {
-                energyProduction = Integer.parseInt(generators.getString(generatorKey + ".stats.energy-production"));
-                energyBuffer = Integer.parseInt(generators.getString(generatorKey + ".stats.energy-buffer"));
-            } catch (NumberFormatException e) {
-                disable("The energy-consumption and energy-buffer for " + generatorKey + " must be a positive integer!");
-                return;
+            SlimefunItem sfItem = SlimefunItem.getByID(args[2]);
+            if (sfItem == null) {
+                Utils.send(p, "&cThat Slimefun item could not be found!");
+                return true;
             }
 
-            if (energyProduction < 0 || energyBuffer < 0) {
-                disable("The energy-production and energy-buffer for " + generatorKey + " must be a positive integer!");
-                return;
+            int amount = 1;
+            if (PatternUtils.NUMERIC.matcher(args[3]).matches()) {
+                amount = Integer.parseInt(args[3]);
             }
 
-            /* Crafting recipe */
-            for (int i = 0; i < 9; i++) {
-                String path = generatorKey + ".crafting-recipe";
-                int configIndex = i + 1;
-                // Shift recipe index up 1 so it's easier for the user to read config
-                String type = generators.getString(path + "." + configIndex + ".type").toUpperCase();
-                String material = generators.getString(path + "." + configIndex + ".id").toUpperCase();
-                if (type.equalsIgnoreCase("NONE")) {
-                    ingredients[i] = null;
-                } else if (type.equalsIgnoreCase("VANILLA")) {
-                    Material vanillaMat = Material.getMaterial(material);
-                    if (vanillaMat == null) {
-                        disable("Crafting ingredient " + configIndex + " for " + generatorKey + " is not a valid " +
-                            "vanilla ID!");
-                        return;
-                    } else {
-                        ingredients[i] = new ItemStack(vanillaMat);
+            giveItems(target, sfItem, amount);
+
+        } else if (args[0].equals("getsaveditem") && sender instanceof Player) {
+            Player p = (Player) sender;
+
+            if (!Utils.checkPermission(p, "slimecustomizer.admin")) {
+                return true;
+            }
+
+            if (args[1].equals("gui")) {
+                List<Pair<String, ItemStack>> items = new ArrayList<>();
+                items.add(new Pair<>(null, null));
+
+                String[] fileNames = itemsFolder.list();
+                if (fileNames != null) {
+                    for (int i = 0; i < fileNames.length; i++) {
+                        fileNames[i] = fileNames[i].replace(".yml", "");
                     }
-                } else if (type.equalsIgnoreCase("SLIMEFUN")) {
-                    SlimefunItem sfMat = SlimefunItem.getByID(material);
-                    if (sfMat == null) {
-                        disable("Crafting ingredient " + configIndex + " for " + generatorKey
-                            + " is not a valid Slimefun ID!");
-                    } else {
-                        ingredients[i] = sfMat.getItem().clone();
+
+                    Arrays.sort(fileNames, new WindowsExplorerStringComparator());
+
+                    for (String id : fileNames) {
+                        items.add(new Pair<>(id, Utils.retrieveSavedItem(id, 1, false)));
+                    }
+
+                    int page = 1;
+                    SCMenu menu = new SCMenu(this, "&a&lSaved Items");
+                    menu.setSize(54);
+                    populateMenu(menu, items, page, p);
+                    menu.setPlayerInventoryClickable(false);
+                    menu.setBackgroundNonClickable(false);
+                    menu.open(p);
+
+                }
+
+            } else {
+                if (args.length < 4) {
+                    Utils.send(p, "&c/sc getsaveditem gui | <item_id> <player_name> <amount>");
+                    return true;
+                }
+
+                String itemName = args[1];
+
+                Player target = Bukkit.getPlayer(args[2]);
+                if (target == null) {
+                    Utils.send(p, "&cThat player could not be found!");
+                    return true;
+                }
+
+                int amount = 1;
+
+                if (PatternUtils.NUMERIC.matcher(args[3]).matches()) {
+                    amount = Integer.parseInt(args[3]);
+                }
+                ItemStack item = Utils.retrieveSavedItem(itemName, amount, false);
+                if (item != null) {
+                    HashMap<Integer, ItemStack> leftovers = target.getInventory().addItem(item);
+                    for (ItemStack leftover : leftovers.values()) {
+                        target.getWorld().dropItem(target.getLocation(), leftover);
                     }
                 } else {
-                    disable("Crafting ingredient " + configIndex + " for " + generatorKey
-                        + " can only have a type of VANILLA, SLIMEFUN, or NONE!");
+                    Utils.send(p, "&cThat saveditem could not be found!");
                 }
             }
-
-            /* Generator recipes */
-            for (String recipeKey : generators.getKeys(generatorKey + ".recipes")) {
-                String path = generatorKey + ".recipes." + recipeKey;
-                int time;
-                ItemStack input = null;
-                ItemStack output = null;
-
-                /* Time */
-                try {
-                    time = Integer.parseInt(generators.getString(path + ".time-in-seconds"));
-                } catch (NumberFormatException e) {
-                    disable("The time-in-seconds for recipe " + recipeKey + " for " + generatorKey
-                        + " must be a positive integer!");
-                    return;
-                }
-
-                if (time < 0) {
-                    disable("The time-in-seconds for recipe " + recipeKey + " for " + generatorKey
-                        + " must be a positive integer!");
-                    return;
-                }
-
-                for (int i = 0; i < 2; i++) {
-
-                    // Run this 2 times for input/output
-                    String slot;
-                    if (i == 0) {
-                        slot = "input";
-                    } else {
-                        slot = "output";
-                    }
-
-                    String type = generators.getString(path + "." + slot + ".type").toUpperCase();
-                    String material = generators.getString(path + "." + slot + ".id").toUpperCase();
-                    int amount = 0;
-
-                    /* Validate amount */
-                    if (i == 0 && type.equalsIgnoreCase("NONE")) {
-                        disable("The the input type for recipe " + recipeKey + " for " + generatorKey
-                            + " can only be VANILLA or SLIMEFUN!");
-                        return;
-                    }
-
-                    if (i == 0 || !type.equalsIgnoreCase("NONE")) {
-                        try {
-                            amount = Integer.parseInt(generators.getString(path + "." + slot + ".amount"));
-                        } catch (NumberFormatException e) {
-                            disable("The amount of " + slot + "s for recipe " + recipeKey + " for " + generatorKey
-                                + " must be a positive integer!");
-                            return;
-                        }
-                    }
-
-                    if (amount < 0) {
-                        disable("The amount of " + slot + "s for recipe " + recipeKey + " for " + generatorKey
-                            + " must be a positive integer!");
-                        return; 
-                    }
-
-                    if (type.equalsIgnoreCase("VANILLA")) {
-                        Material vanillaMat = Material.getMaterial(material);
-                        if (vanillaMat == null) {
-                            disable("The " + slot + "ingredient for recipe" + recipeKey + " for " + generatorKey
-                                + " is not a valid vanilla ID!");
-                            return;
-                        } else {
-                            if (i == 0) {
-                                input = new ItemStack(vanillaMat);
-                                input.setAmount(amount);
-                                checkExceedsStackSize(input, slot, generatorKey, recipeKey);
-                            } else {
-                                output = new ItemStack(vanillaMat);
-                                output.setAmount(amount);
-                                checkExceedsStackSize(output, slot, generatorKey, recipeKey);
-                            }
-                        }
-                    } else if (type.equalsIgnoreCase("SLIMEFUN")) {
-                        SlimefunItem sfMat = SlimefunItem.getByID(material);
-                        if (sfMat == null) {
-                            disable("The " + slot + " ingredient for recipe" + recipeKey + " for " + generatorKey
-                                + " is not a valid Slimefun ID!");
-                        } else {
-                            if (i == 0) {
-                                input = sfMat.getItem().clone();
-                                input.setAmount(amount);
-                                checkExceedsStackSize(input, slot, generatorKey, recipeKey);
-                            } else {
-                                output = sfMat.getItem().clone();
-                                output.setAmount(amount);
-                                checkExceedsStackSize(output, slot, generatorKey, recipeKey);
-                            }
-                        }
-                    } else if (i == 0) {
-                        disable("The " + slot + " ingredient type for recipe" + recipeKey + " for " + generatorKey
-                            + " can only be VANILLA or SLIMEFUN!");
-                        return;
-                    } else if (!type.equalsIgnoreCase("NONE")) {
-                        disable("The " + slot + " ingredient type for recipe" + recipeKey + " for " + generatorKey
-                            + " can only be VANILLA, SLIMEFUN, or NONE!");
-                    }
-                }
-
-                customRecipe.add(new MachineFuel(time, input, output));
-
-            }
-
-            SlimefunItemStack tempStack;
-
-            if (block != null) {
-                tempStack = new SlimefunItemStack(generatorKey,
-                    block,
-                    generators.getString(generatorKey + ".generator-name"),
-                    generators.getString(generatorKey + ".generator-lore"),
-                    "",
-                    "&aGenerator",
-                    LoreBuilderDynamic.powerBuffer(energyBuffer),
-                    LoreBuilderDynamic.powerPerTick(energyProduction)
-                );
-            } else {
-                tempStack = new SlimefunItemStack(generatorKey,
-                    skull,
-                    generators.getString(generatorKey + ".generator-name"),
-                    generators.getString(generatorKey + ".generator-lore"),
-                    "",
-                    "&aGenerator",
-                    LoreBuilderDynamic.powerBuffer(energyBuffer),
-                    LoreBuilderDynamic.powerPerTick(energyProduction)
-                );
-            }
-
-
-
-            new CustomGenerator(slime_customizer, tempStack, RecipeType.ENHANCED_CRAFTING_TABLE, ingredients,
-                generatorKey, progressItem, energyProduction, energyBuffer, customRecipe).register(this);
         }
+        return true;
+    }
+
+    /**
+     * Populates the saveditem gui. 45 items per page.
+     * @param menu the SCMenu to populate
+     * @param items the List of items
+     * @param page the page number
+     * @param p the player that will be viewing this menu
+     */
+    private void populateMenu(SCMenu menu, List<Pair<String, ItemStack>> items, int page, Player p) {
+        for (int i = 45; i < 54; i++) {
+            menu.replaceExistingItem(i, ChestMenuUtils.getBackground());
+        }
+
+        menu.wipe(0, 44, true);
+
+        for (int i = 0; i < 45; i++) {
+            int itemIndex = i + 1 + (page - 1) * 45;
+            ItemStack item = getItemOrNull(items, itemIndex);
+            if (item != null) {
+                ItemMeta im = item.getItemMeta();
+                List<String> lore = im.getLore();
+
+                if (lore == null) {
+                    lore = new ArrayList<>(Arrays.asList("", Utils.color("&bID: " + items.get(itemIndex).getFirstValue()),
+                        Utils.color("&a> Click to get this item")));
+                } else {
+                    lore.addAll(new ArrayList<>(Arrays.asList("", Utils.color("&bID: " + items.get(itemIndex).getFirstValue()),
+                        Utils.color("&a> Click to get this item"))));
+                }
+
+                im.setLore(lore);
+                item.setItemMeta(im);
+                menu.replaceExistingItem(i, item);
+                menu.addMenuClickHandler(i, (pl, s, is, ic, action) -> {
+                    HashMap<Integer, ItemStack> leftovers = p.getInventory().addItem(getItemOrNull(items, itemIndex));
+                    for (ItemStack leftover : leftovers.values()) {
+                        p.getWorld().dropItem(p.getLocation(), leftover);
+                    }
+                    return false;
+                });
+            }
+        }
+
+        if (page != 1) {
+            menu.replaceExistingItem(46, new CustomItem(Material.LIME_STAINED_GLASS_PANE, "&aPrevious Page"));
+            menu.addMenuClickHandler(46, (pl, s, is, ic, action) -> {
+                populateMenu(menu, items, page - 1, p);
+                return false;
+            });
+        }
+
+        if (getItemOrNull(items, 45 * page) != null) {
+            menu.replaceExistingItem(52, new CustomItem(Material.LIME_STAINED_GLASS_PANE, "&aNext Page"));
+            menu.addMenuClickHandler(52, (pl, s, is, ic, action) -> {
+                populateMenu(menu, items, page + 1, p);
+                return false;
+            });
+        }
+
+    }
+
+    private ItemStack getItemOrNull(List<Pair<String, ItemStack>> items, int index) {
+        ItemStack item;
+        try {
+            item = items.get(index).getSecondValue().clone();
+        } catch (IndexOutOfBoundsException e) {
+            item = null;
+        }
+        return item;
+    }
+
+    private void giveItems(Player p, SlimefunItem sfItem, int amount) {
+        p.getInventory().addItem(new CustomItem(sfItem.getRecipeOutput(), amount));
+        Utils.send(p, "&bYou have given " + p.getName() + " &a" + amount + " &7\"&b" + sfItem.getItemName() + "&7\"");
     }
 
     @Override
@@ -508,20 +334,8 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
         return this;
     }
 
-    private static SlimeCustomizer getInstance() {
+    public static SlimeCustomizer getInstance() {
         return instance;
-    }
-
-    private void disable(String reason) {
-        getLogger().log(Level.SEVERE, reason);
-        Bukkit.getPluginManager().disablePlugin(this);
-    }
-
-    private void checkExceedsStackSize(ItemStack item, String slot, String machineKey, String recipeKey) {
-         if (item.getAmount() > item.getMaxStackSize()) {
-             disable("The " + slot + "ingredient for recipe" + recipeKey + " for " + machineKey
-                 + " has a max stack size of " + item.getMaxStackSize() + "!");
-         }
     }
 
 }
