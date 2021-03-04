@@ -6,7 +6,15 @@ This Slimefun4 addon allows any server owner to add their own custom Slimefun ma
   </a>
 </p>
 
-*Want to see what SlimeCustomizer can do? Visit `play.royale-mc.com` and take a look at their custom items!*
+### Showcase
+*Want to see what SlimeCustomizer can do? Visit `play.royale-mc.com` and take a look at their custom items! All showcase image credits go to Azakaturan.*
+
+![Resources](https://user-images.githubusercontent.com/31554056/110004177-c124dd00-7cdc-11eb-8031-3c1feeec228e.png)\
+![Category](https://user-images.githubusercontent.com/31554056/110005314-f2ea7380-7cdd-11eb-9090-36017111cbf1.png)
+![Electric Ingot Factory IV](https://user-images.githubusercontent.com/31554056/110005311-f251dd00-7cdd-11eb-905a-55d4a86ff5d0.png)
+![Heated Redstone](https://user-images.githubusercontent.com/31554056/110005901-9cca0000-7cde-11eb-846c-2a1bd5b2c900.png)
+![Charcoal Kiln](https://user-images.githubusercontent.com/31554056/110005316-f2ea7380-7cdd-11eb-8bd3-d95d50b25be6.png)
+![Heated Carbon Press](https://user-images.githubusercontent.com/31554056/110005318-f3830a00-7cdd-11eb-871b-6b9fa733231a.png)
 
 #### Reporting bugs
 Please report all bugs in the [issue tracker](https://github.com/NCBPFluffyBear/SlimeCustomizer/issues).
@@ -39,6 +47,7 @@ slime_customizer:
 ##### Adding your item
 1. Open the `items.yml` file, located at `\<YOUR_SERVER_LOCATION>\plugins\SlimeCustomizer`
 The table below explains what each key does.
+
 
 ```yaml
 EXAMPLE_ITEM:
