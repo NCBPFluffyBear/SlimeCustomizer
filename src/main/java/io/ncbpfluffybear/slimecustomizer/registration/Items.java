@@ -1,18 +1,22 @@
 package io.ncbpfluffybear.slimecustomizer.registration;
 
+import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.ncbpfluffybear.slimecustomizer.SlimeCustomizer;
 import io.ncbpfluffybear.slimecustomizer.Utils;
 import io.ncbpfluffybear.slimecustomizer.objects.CustomSCItem;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.cscorelib2.config.Config;
 import me.mrCookieSlime.Slimefun.cscorelib2.skull.SkullItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
 /**
@@ -94,12 +98,22 @@ public class Items {
             ItemStack[] recipe = Utils.buildCraftingRecipe(items, itemKey, recipeType);
             if (recipe == null) {return false;}
 
-            if (itemType.equalsIgnoreCase("CUSTOM")) {
-                new CustomSCItem(category, tempStack, recipeType, recipe
-                ).register(SlimeCustomizer.getInstance());
-            } else {
-                new CustomSCItem(category, tempStack, recipeType, recipe, item
-                ).register(SlimeCustomizer.getInstance());
+            // the main item should have an amount of 1
+            tempStack.setAmount(1);
+            
+            // use the item they made/saved as output
+            new CustomSCItem(category, tempStack, recipeType, recipe, item).register(SlimeCustomizer.getInstance());
+
+            if (recipeType == RecipeType.COMPRESSOR) {
+                // add the recipe to the electric press so it can be automated
+                ItemStack finalItem = item;
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        ((AContainer) Objects.requireNonNull(SlimefunItems.ELECTRIC_PRESS.getItem()))
+                                .registerRecipe(6, recipe[0], finalItem);
+                    }
+                }.runTask(SlimeCustomizer.getInstance());
             }
 
             Utils.notify("Item " + itemKey + " has been registered!");
