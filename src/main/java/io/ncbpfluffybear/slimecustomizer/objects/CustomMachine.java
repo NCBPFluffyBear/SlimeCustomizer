@@ -51,17 +51,6 @@ public class CustomMachine extends AContainer implements RecipeDisplayItem {
 
         // Gets called in AContainer, but customRecipes is null at that time.
         // registerDefaultRecipes();
-
-        registerBlockHandler(id, (p, b, stack, reason) -> {
-            BlockMenu inv = BlockStorage.getInventory(b);
-
-            if (inv != null) {
-                inv.dropItems(b.getLocation(), getOutputSlots());
-                inv.dropItems(b.getLocation(), getInputSlots());
-            }
-
-            return true;
-        });
     }
 
     @Override

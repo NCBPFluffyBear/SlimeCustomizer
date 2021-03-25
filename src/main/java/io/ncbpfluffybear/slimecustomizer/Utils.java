@@ -278,7 +278,7 @@ public class Utils {
                 return RecipeType.ORE_CRUSHER;
             case "GRIND_STONE":
                 return RecipeType.GRIND_STONE;
-            case "NULL":
+            case "NONE":
                 return RecipeType.NULL;
         }
     }

@@ -41,17 +41,6 @@ public class CustomGenerator extends AGenerator {
 
         // Gets called in AGenerator, but customRecipes is null at that time.
         registerDefaultFuelTypes();
-
-        registerBlockHandler(id, (p, b, stack, reason) -> {
-            BlockMenu inv = BlockStorage.getInventory(b);
-
-            if (inv != null) {
-                inv.dropItems(b.getLocation(), getOutputSlots());
-                inv.dropItems(b.getLocation(), getInputSlots());
-            }
-
-            return true;
-        });
     }
 
     @Override

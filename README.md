@@ -214,7 +214,7 @@ EXAMPLE_MACHINE:
 | progress-bar-item | The vanilla ID of the progress bar item. |
 | stats.energy-consumption | The amount of energy consumed by this machine per Slimefun tick. |
 | stats.energy-buffer | The amount of energy that can be stored in this machine. |
-| crafting-recipe-type | The multiblock machine that this item will be crafted in. | ENHANCED_CRAFTING_TABLE, MAGIC_WORKBENCH, ARMOR_FORGE, COMPRESSOR, PRESSURE_CHAMBER, SMELTERY, ORE_CRUSHER, GRIND_STONE, NULL (Can not be crafted with multiblocks) |
+| crafting-recipe-type | The multiblock machine that this item will be crafted in. | ENHANCED_CRAFTING_TABLE, MAGIC_WORKBENCH, ARMOR_FORGE, COMPRESSOR, PRESSURE_CHAMBER, SMELTERY, ORE_CRUSHER, GRIND_STONE, NONE (Can not be crafted with multiblocks) |
 | crafting-recipe.#.type | The type of item. | NONE (Empty spot, all other fields will be ignored), VANILLA, SLIMEFUN, SAVEDITEM |
 | crafting-recipe.#.id | The id of the item based on the type. |
 | recipes.#.speed-in-seconds | The time it takes for the recipe to complete. |
@@ -300,7 +300,7 @@ EXAMPLE_GENERATOR:
 | progress-bar-item | The vanilla ID of the progress bar item. |
 | stats.energy-production | The amount of energy produced by this generator per Slimefun tick. |
 | stats.energy-buffer | The amount of energy that can be stored in this machine. |
-| crafting-recipe-type | The multiblock machine that this item will be crafted in. | ENHANCED_CRAFTING_TABLE, MAGIC_WORKBENCH, ARMOR_FORGE, COMPRESSOR, PRESSURE_CHAMBER, SMELTERY, ORE_CRUSHER, GRIND_STONE, NULL (Can not be crafted with multiblocks) |
+| crafting-recipe-type | The multiblock machine that this item will be crafted in. | ENHANCED_CRAFTING_TABLE, MAGIC_WORKBENCH, ARMOR_FORGE, COMPRESSOR, PRESSURE_CHAMBER, SMELTERY, ORE_CRUSHER, GRIND_STONE, NONE (Can not be crafted with multiblocks) |
 | crafting-recipe.#.type | The type of item. | NONE (Empty spot, all other fields will be ignored), VANILLA, SLIMEFUN, SAVEDITEM |
 | crafting-recipe.#.id | The id of the item based on the type. |
 | recipes.#.time-in-seconds | The time it takes for the recipe to complete. |
