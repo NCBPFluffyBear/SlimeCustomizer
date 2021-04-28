@@ -14,30 +14,39 @@ EXAMPLE_MACHINE:
     1:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     2:
       type: NONE
       id: N/A
+      amount: 1
     3:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     4:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     5:
       type: SLIMEFUN
       id: SMALL_CAPACITOR
+      amount: 1
     6:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     7:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     8:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     9:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
   recipes:
     1:
       speed-in-seconds: 5

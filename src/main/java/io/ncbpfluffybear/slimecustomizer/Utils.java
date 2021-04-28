@@ -6,6 +6,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.cscorelib2.collections.Pair;
 import me.mrCookieSlime.Slimefun.cscorelib2.config.Config;
 import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
+import me.mrCookieSlime.Slimefun.cscorelib2.skull.SkullItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -97,8 +98,8 @@ public class Utils {
             try {
                 amount = Integer.parseInt(file.getString(path + "." + configIndex + ".amount"));
             } catch (NumberFormatException e) {
-                Utils.disable("The amount for " + configIndex + " for " + key + " is not a valid " +
-                    "vanilla ID!");
+                Utils.disable("The amount for " + configIndex + " for " + key + " must be a positive " +
+                    "integer!");
                 return null;
             }
 
@@ -154,6 +155,27 @@ public class Utils {
 
         SlimeCustomizer.existingRecipes.put(recipe, new Pair<>(recipeType, key));
         return recipe;
+    }
+
+    public static ItemStack getBlockFromConfig(String key, String materialString) {
+        if (materialString == null) {
+            Utils.disable("The material for " + key + " could not be found!");
+            return null;
+        }
+
+        ItemStack block = null;
+        Material material = Material.getMaterial(materialString);
+
+        if ((material == null || !material.isBlock()) && !materialString.startsWith("SKULL")) {
+            Utils.disable("The block-type for " + key + " MUST be a block!");
+            return null;
+        } else if (material != null && material.isBlock()) {
+            block = new ItemStack(material);
+        } else if (materialString.startsWith("SKULL")) {
+            block = SkullItem.fromHash(materialString.replace("SKULL", ""));
+        }
+
+        return block;
     }
 
     public static void updateLoreFormat(Config config, String key, String machineType) {
@@ -240,7 +262,7 @@ public class Utils {
         File serializedItemFile = new File(SlimeCustomizer.getInstance().getDataFolder(), "saveditems/" + id + ".yml");
         if (!serializedItemFile.exists()) {
             if (disableIfNull) {
-                disable(id + " could not be found in your saveditems folder! Make sure the file is a text file!");
+                disable(id + " could not be found in your saveditems folder! Make sure the file is a yml file!");
             }
             return null;
         } else {

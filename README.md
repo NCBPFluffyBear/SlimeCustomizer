@@ -108,7 +108,7 @@ EXAMPLE_ITEM:
 | item-lore | The lore of the item. |
 | item-id | The vanilla ID or skull hash of the material this item will use. |
 | item-amount | The amount of this item crafted at once. |
-| crafting-recipe-type | The multiblock machine that this item will be crafted in. | ENHANCED_CRAFTING_TABLE, MAGIC_WORKBENCH, ARMOR_FORGE, COMPRESSOR, PRESSURE_CHAMBER, SMELTERY, ORE_CRUSHER, GRIND_STONE, NULL (Can not be crafted with multiblocks) |
+| crafting-recipe-type | The multiblock machine that this item will be crafted in. | ENHANCED_CRAFTING_TABLE, MAGIC_WORKBENCH, ARMOR_FORGE, COMPRESSOR, PRESSURE_CHAMBER, SMELTERY, ORE_CRUSHER, GRIND_STONE, NONE (Can not be crafted with multiblocks) |
 | crafting-recipe.#.type | The type of item. | NONE (Empty spot, all other fields will be ignored), SLIMEFUN, SAVEDITEM |
 | crafting-recipe.#.id | The id of the item. |
 | crafting-recipe.#.amount | The amount of the item. |

@@ -9,6 +9,7 @@ import io.ncbpfluffybear.slimecustomizer.registration.Categories;
 import io.ncbpfluffybear.slimecustomizer.registration.Generators;
 import io.ncbpfluffybear.slimecustomizer.registration.Items;
 import io.ncbpfluffybear.slimecustomizer.registration.Machines;
+import io.ncbpfluffybear.slimecustomizer.registration.SolarGenerators;
 import lombok.SneakyThrows;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
@@ -103,6 +104,24 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
             }
         }
 
+        final File solarGeneratorsFile = new File(getInstance().getDataFolder(), "solar-generators.yml");
+        if (!solarGeneratorsFile.exists()) {
+            try {
+                Files.copy(this.getClass().getResourceAsStream("/solar-generators.yml"), solarGeneratorsFile.toPath());
+            } catch (IOException e) {
+                getInstance().getLogger().log(Level.SEVERE, "Failed to copy default solar-generators.yml file", e);
+            }
+        }
+
+        final File passiveMachinesFile = new File(getInstance().getDataFolder(), "passive-machines.yml");
+        if (!passiveMachinesFile.exists()) {
+            try {
+                Files.copy(this.getClass().getResourceAsStream("/passive-machines.yml"), passiveMachinesFile.toPath());
+            } catch (IOException e) {
+                getInstance().getLogger().log(Level.SEVERE, "Failed to copy default passive-machines.yml file", e);
+            }
+        }
+
         if (!itemsFolder.exists()) {
             try {
                 Files.createDirectory(itemsFolder.toPath());
@@ -115,6 +134,8 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
         Config items = new Config(this, "items.yml");
         Config machines = new Config(this, "machines.yml");
         Config generators = new Config(this, "generators.yml");
+        Config solarGenerators = new Config(this, "solar-generators.yml");
+        Config passiveMachines = new Config(this, "passive-machines.yml");
 
         this.getCommand("slimecustomizer").setTabCompleter(new SCTabCompleter());
 
@@ -123,15 +144,15 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
         if (!Items.register(items)) {return;}
         if (!Machines.register(machines)) {return;}
         if (!Generators.register(generators)) {return;}
+        if (!PassiveMachines.register(passiveMachines)) {return;}
+        if (!SolarGenerators.register(solarGenerators)) {return;}
         Bukkit.getPluginManager().registerEvents(new Events(), instance);
     }
 
     @SneakyThrows
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 0 && sender instanceof Player) {
-            Utils.send(sender, "&eAll commands can be found at &9" + Links.COMMANDS);
-        } else if (args[0].equals("saveitem") && sender instanceof Player) {
+        if (sender instanceof Player && args[0].equals("saveitem")) {
             Player p = (Player) sender;
             if (!Utils.checkPermission(p, "slimecustomizer.admin")) {
                 return true;
@@ -153,7 +174,7 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
             Utils.send(p, "&eYour item has been saved to " + itemFile.getPath() + ". Please refer to " +
                 "&9" + Links.USING_CUSTOM_ITEMS);
 
-        } else if (args[0].equals("give") && args.length > 2 && sender instanceof Player) {
+        } else if (sender instanceof Player && args[0].equals("give") && args.length > 2) {
             Player p = (Player) sender;
             if (!Utils.checkPermission(p, "slimecustomizer.admin")) {
                 return true;
@@ -178,7 +199,7 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
 
             giveItems(target, sfItem, amount);
 
-        } else if (args[0].equals("getsaveditem") && sender instanceof Player) {
+        } else if (sender instanceof Player && args[0].equals("getsaveditem")) {
             Player p = (Player) sender;
 
             if (!Utils.checkPermission(p, "slimecustomizer.admin")) {
@@ -240,7 +261,10 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
                     Utils.send(p, "&cThat saveditem could not be found!");
                 }
             }
+        } else {
+            Utils.send(sender, "&eAll commands can be found at &9" + Links.COMMANDS);
         }
+
         return true;
     }
 

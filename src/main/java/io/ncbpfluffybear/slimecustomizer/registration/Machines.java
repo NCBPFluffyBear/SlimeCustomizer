@@ -178,7 +178,7 @@ public class Machines {
                                 }
                             }
                         } else if (!(type.equalsIgnoreCase("NONE") && transIndex == 2)) {
-                            Utils.disable("The " + Utils.toOrdinal(transIndex) + " " + slot + " ingredient type for recipe " + recipeKey + " for " + machineKey
+                            Utils.disable("The ingredient type for recipe " + recipeKey + " for " + machineKey
                                 + " can only be VANILLA, SLIMEFUN, or SAVEDITEM for the 1st " + slot + " and VANILLA, SLIMEFUN, SAVEDITEM, or NONE for the 2nd " + slot + "!");
                         }
                     }
