@@ -98,7 +98,7 @@ public class Utils {
             try {
                 amount = Integer.parseInt(file.getString(path + "." + configIndex + ".amount"));
             } catch (NumberFormatException e) {
-                Utils.disable("The amount for " + configIndex + " for " + key + " must be a positive " +
+                Utils.disable("Crafting recipe item " + configIndex + " for " + key + " must be a positive " +
                     "integer!");
                 return null;
             }

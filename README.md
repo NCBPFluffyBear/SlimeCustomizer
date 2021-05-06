@@ -138,30 +138,39 @@ EXAMPLE_MACHINE:
     1:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     2:
       type: NONE
       id: N/A
+      amount: 1
     3:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     4:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     5:
       type: SLIMEFUN
       id: SMALL_CAPACITOR
+      amount: 1
     6:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     7:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     8:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     9:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
   recipes:
     1:
       speed-in-seconds: 5
@@ -217,6 +226,7 @@ EXAMPLE_MACHINE:
 | crafting-recipe-type | The multiblock machine that this item will be crafted in. | ENHANCED_CRAFTING_TABLE, MAGIC_WORKBENCH, ARMOR_FORGE, COMPRESSOR, PRESSURE_CHAMBER, SMELTERY, ORE_CRUSHER, GRIND_STONE, NONE (Can not be crafted with multiblocks) |
 | crafting-recipe.#.type | The type of item. | NONE (Empty spot, all other fields will be ignored), VANILLA, SLIMEFUN, SAVEDITEM |
 | crafting-recipe.#.id | The id of the item based on the type. |
+| crafting-recipe.#.amount | The amount of the item to use in the recipe. Enhanced Crafting Table only accepts 1. |
 | recipes.#.speed-in-seconds | The time it takes for the recipe to complete. |
 | recipes.#.input/output.#.type | The type of item. | NONE (Empty spot, all other fields will be ignored), VANILLA, SLIMEFUN, SAVEDITEM |
 | recipes.#.input/output.#.id | The id of the item based on the type. |
@@ -244,30 +254,39 @@ EXAMPLE_GENERATOR:
     1:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     2:
       type: NONE
       id: N/A
+      amount: 1
     3:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     4:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     5:
       type: SLIMEFUN
       id: COAL_GENERATOR
+      amount: 1
     6:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     7:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     8:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
     9:
       type: VANILLA
       id: IRON_BLOCK
+      amount: 1
   recipes:
     1:
       time-in-seconds: 5
@@ -303,10 +322,79 @@ EXAMPLE_GENERATOR:
 | crafting-recipe-type | The multiblock machine that this item will be crafted in. | ENHANCED_CRAFTING_TABLE, MAGIC_WORKBENCH, ARMOR_FORGE, COMPRESSOR, PRESSURE_CHAMBER, SMELTERY, ORE_CRUSHER, GRIND_STONE, NONE (Can not be crafted with multiblocks) |
 | crafting-recipe.#.type | The type of item. | NONE (Empty spot, all other fields will be ignored), VANILLA, SLIMEFUN, SAVEDITEM |
 | crafting-recipe.#.id | The id of the item based on the type. |
+| crafting-recipe.#.amount | The amount of the item to use in the recipe. Enhanced Crafting Table only accepts 1. |
 | recipes.#.time-in-seconds | The time it takes for the recipe to complete. |
 | recipes.#.input/output.type | The type of item. | NONE (Empty spot, all other fields will be ignored), VANILLA, SLIMEFUN, SAVEDITEM |
 | recipes.#.input/output.id | The id of the item based on the type. |
 | recipes.#.input/output.amount | The amount of items. |
+
+##### Adding your solar generator
+1. Open the `solar-generators.yml` file, located at `\<YOUR_SERVER_LOCATION>\plugins\SlimeCustomizer`
+The table below explains what each key does.
+
+```yaml
+EXAMPLE_SOLAR_GENERATOR:
+  category: slime_customizer
+  generator-name: "&bExample Solar Generator"
+  generator-lore:
+  - "&7This is an example solar generator!"
+  block-type: DAYLIGHT_DETECTOR
+  stats:
+    energy-production:
+      day: 256
+      night: 128
+  crafting-recipe-type: ENHANCED_CRAFTING_TABLE
+  crafting-recipe:
+    1:
+      type: VANILLA
+      id: BEDROCK
+      amount: 1
+    2:
+      type: NONE
+      id: N/A
+      amount: 1
+    3:
+      type: VANILLA
+      id: BEDROCK
+      amount: 1
+    4:
+      type: VANILLA
+      id: IRON_BLOCK
+      amount: 1
+    5:
+      type: SLIMEFUN
+      id: COAL_GENERATOR
+      amount: 1
+    6:
+      type: VANILLA
+      id: IRON_BLOCK
+      amount: 1
+    7:
+      type: VANILLA
+      id: IRON_BLOCK
+      amount: 1
+    8:
+      type: VANILLA
+      id: IRON_BLOCK
+      amount: 1
+    9:
+      type: VANILLA
+      id: IRON_BLOCK
+      amount: 1
+```
+| Key | Description | Acceptable Inputs |
+| --- | ----------- | ----------------- |
+| EXAMPLE_SOLAR_GENERATOR | The ID of the generator. You can change this key! |
+| category | The key of the category that this item will be under in the Slimefun guide.
+| generator-name | The name of the generator. |
+| generator-lore | The lore of the generator. |
+| block-type | The vanilla ID or skull hash of the material this item will use. | 
+| stats.energy-production.day | The amount of energy produced by this generator per Slimefun tick during daytime. |
+| stats.energy-production.day | The amount of energy produced by this generator per Slimefun tick during nighttime. |
+| crafting-recipe-type | The multiblock machine that this item will be crafted in. | ENHANCED_CRAFTING_TABLE, MAGIC_WORKBENCH, ARMOR_FORGE, COMPRESSOR, PRESSURE_CHAMBER, SMELTERY, ORE_CRUSHER, GRIND_STONE, NONE (Can not be crafted with multiblocks) |
+| crafting-recipe.#.type | The type of item. | NONE (Empty spot, all other fields will be ignored), VANILLA, SLIMEFUN, SAVEDITEM |
+| crafting-recipe.#.id | The id of the item based on the type. |
+| crafting-recipe.#.amount | The amount of the item to use in the recipe. Enhanced Crafting Table only accepts 1. |
 
 #### Using skull textures
 Want to use a skull texture instead of a block? Replace `block-type` with `SKULL<hash>`. Example provided in the generators config.
@@ -415,5 +503,9 @@ loadbefore:
     - Added [custom items](#adding-your-item)
     - Added [custom categories](#adding-your-category)
     - Added new commands
+- DEV 4:
+    - Machine bug fix
+- DEV 5:
+    - Added [solar generators](#adding-your-solar-generator)
 
 Have any questions? Join the Slimefun discord at https://discord.gg/slimefun/

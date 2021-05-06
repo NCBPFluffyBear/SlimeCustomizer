@@ -113,6 +113,7 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
             }
         }
 
+        /*
         final File passiveMachinesFile = new File(getInstance().getDataFolder(), "passive-machines.yml");
         if (!passiveMachinesFile.exists()) {
             try {
@@ -121,6 +122,8 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
                 getInstance().getLogger().log(Level.SEVERE, "Failed to copy default passive-machines.yml file", e);
             }
         }
+
+         */
 
         if (!itemsFolder.exists()) {
             try {
@@ -144,7 +147,7 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
         if (!Items.register(items)) {return;}
         if (!Machines.register(machines)) {return;}
         if (!Generators.register(generators)) {return;}
-        if (!PassiveMachines.register(passiveMachines)) {return;}
+        // if (!PassiveMachines.register(passiveMachines)) {return;}
         if (!SolarGenerators.register(solarGenerators)) {return;}
         Bukkit.getPluginManager().registerEvents(new Events(), instance);
     }
@@ -174,21 +177,20 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
             Utils.send(p, "&eYour item has been saved to " + itemFile.getPath() + ". Please refer to " +
                 "&9" + Links.USING_CUSTOM_ITEMS);
 
-        } else if (sender instanceof Player && args[0].equals("give") && args.length > 2) {
-            Player p = (Player) sender;
-            if (!Utils.checkPermission(p, "slimecustomizer.admin")) {
+        } else if (args[0].equals("give") && args.length > 2) {
+            if (sender instanceof Player && !Utils.checkPermission((Player) sender, "slimecustomizer.admin")) {
                 return true;
             }
 
             Player target = Bukkit.getPlayer(args[1]);
             if (target == null) {
-                Utils.send(p, "&cThat player could not be found!");
+                Utils.send(sender, "&cThat player could not be found!");
                 return true;
             }
 
-            SlimefunItem sfItem = SlimefunItem.getByID(args[2]);
+            SlimefunItem sfItem = SlimefunItem.getByID(args[2].toUpperCase());
             if (sfItem == null) {
-                Utils.send(p, "&cThat Slimefun item could not be found!");
+                Utils.send(sender, "&cThat Slimefun item could not be found!");
                 return true;
             }
 

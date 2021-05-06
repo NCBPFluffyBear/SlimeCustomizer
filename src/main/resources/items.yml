@@ -1,4 +1,4 @@
-#READ THE WIKI BEFORE CREATING AN ITEM!
+#READ THE WIKI BEFORE CREATING AN ITEM! https://github.com/NCBPFluffyBear/SlimeCustomizer/blob/master/README.md
 EXAMPLE_ITEM:
   category: slime_customizer
   item-type: CUSTOM
