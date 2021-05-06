@@ -4,7 +4,6 @@ import io.ncbpfluffybear.slimecustomizer.SlimeCustomizer;
 import io.ncbpfluffybear.slimecustomizer.Utils;
 import io.ncbpfluffybear.slimecustomizer.objects.CustomGenerator;
 import io.ncbpfluffybear.slimecustomizer.objects.SCMachine;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
@@ -160,7 +159,7 @@ public class Generators {
 
             new CustomGenerator(category, generator.getMachineStack(),
                 generator.getRecipeType(), generator.getRecipe(),
-                generatorKey, generator.getProgressItem(), generator.getEnergyProduction(),
+                generator.getProgressItem(), generator.getEnergyProduction(),
                 generator.getEnergyBuffer(), customRecipe
             ).register(SlimeCustomizer.getInstance());
 
