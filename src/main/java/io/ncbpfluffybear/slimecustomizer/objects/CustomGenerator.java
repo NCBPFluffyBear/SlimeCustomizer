@@ -75,7 +75,11 @@ public class CustomGenerator extends AGenerator {
                 }
             } else {
 
-                inv.pushItem(processing.get(l).getOutput(), getOutputSlots());
+                ItemStack output = processing.get(l).getOutput();
+
+                if (output != null && output.getType() != Material.AIR) {
+                    inv.pushItem(output, getOutputSlots());
+                }
 
                 inv.replaceExistingItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "));
 
