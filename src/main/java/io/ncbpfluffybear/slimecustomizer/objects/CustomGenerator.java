@@ -29,7 +29,7 @@ import java.util.Map;
  *
  * @author NCBPFluffyBear
  */
-public class CustomGenerator extends AGenerator {
+public class CustomGenerator extends SCAGenerator {
 
     private final ItemStack progressItem;
     private final int energyProduction;
@@ -46,77 +46,10 @@ public class CustomGenerator extends AGenerator {
         this.energyBuffer = energyBuffer;
         this.customRecipes = customRecipes;
 
+        getMachineProcessor().setProgressBar(getProgressBar());
+
         // Gets called in AGenerator, but customRecipes is null at that time.
         registerDefaultFuelTypes();
-    }
-
-    @Override
-    public int getGeneratedOutput(Location l, Config data) {
-        BlockMenu inv = BlockStorage.getInventory(l);
-
-        if (isProcessing(l)) {
-            int timeleft = progress.get(l);
-
-            if (timeleft > 0) {
-                ChestMenuUtils.updateProgressbar(inv, 22, timeleft, processing.get(l).getTicks(), getProgressBar());
-
-                if (isChargeable()) {
-                    int charge = getCharge(l, data);
-
-                    if (getCapacity() - charge >= getEnergyProduction()) {
-                        progress.put(l, timeleft - 1);
-                        return getEnergyProduction();
-                    }
-
-                    return 0;
-                } else {
-                    progress.put(l, timeleft - 1);
-                    return getEnergyProduction();
-                }
-            } else {
-
-                ItemStack output = processing.get(l).getOutput();
-
-                if (output != null && output.getType() != Material.AIR) {
-                    inv.pushItem(output, getOutputSlots());
-                }
-
-                inv.replaceExistingItem(22, new CustomItem(Material.BLACK_STAINED_GLASS_PANE, " "));
-
-                Bukkit.getPluginManager().callEvent(new AsyncGeneratorProcessCompleteEvent(l, CustomGenerator.this, getProcessing(l)));
-
-                progress.remove(l);
-                processing.remove(l);
-                return 0;
-            }
-        } else {
-            Map<Integer, Integer> found = new HashMap<>();
-            MachineFuel fuel = findRecipe(inv, found);
-
-            if (fuel != null) {
-                for (Map.Entry<Integer, Integer> entry : found.entrySet()) {
-                    inv.consumeItem(entry.getKey(), entry.getValue());
-                }
-
-                processing.put(l, fuel);
-                progress.put(l, fuel.getTicks());
-            }
-
-            return 0;
-        }
-    }
-
-    private MachineFuel findRecipe(BlockMenu menu, Map<Integer, Integer> found) {
-        for (MachineFuel fuel : fuelTypes) {
-            for (int slot : getInputSlots()) {
-                if (fuel.test(menu.getItemInSlot(slot))) {
-                    found.put(slot, fuel.getInput().getAmount());
-                    return fuel;
-                }
-            }
-        }
-
-        return null;
     }
 
     @Override
