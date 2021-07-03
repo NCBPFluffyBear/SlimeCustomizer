@@ -6,9 +6,7 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.cscorelib2.collections.Pair;
 import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
 import org.bukkit.Material;
@@ -44,10 +42,12 @@ public class CustomMachine extends AContainer implements RecipeDisplayItem {
         super(category, item, recipeType, recipe);
 
         this.id = id;
-        this.progressItem = new CustomItem(progressItem, "");
+        this.progressItem = new ItemStack(progressItem);
         this.energyConsumption = energyConsumption;
         this.energyBuffer = energyBuffer;
         this.customRecipes = customRecipes;
+
+        getMachineProcessor().setProgressBar(getProgressBar());
 
         // Gets called in AContainer, but customRecipes is null at that time.
         // registerDefaultRecipes();
