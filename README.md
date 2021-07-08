@@ -192,26 +192,26 @@ EXAMPLE_MACHINE:
           type: NONE
           id: N/A
           amount: 1
-      2:
-        speed-in-seconds: 5
-        input:
-          1:
-            type: SLIMEFUN
-            id: GOLD_24K
-            amount: 9
-          2:
-            type: NONE
-            id: N/A
-            amount: 1
-        output:
-          1:
-            type: SLIMEFUN
-            id: GOLD_24K_BLOCK
-            amount: 1
-          2:
-            type: NONE
-            id: N/A
-            amount: 1
+    2:
+      speed-in-seconds: 5
+      input:
+        1:
+          type: SLIMEFUN
+          id: GOLD_24K
+          amount: 9
+        2:
+          type: NONE
+          id: N/A
+          amount: 1
+      output:
+        1:
+          type: SLIMEFUN
+          id: GOLD_24K_BLOCK
+          amount: 1
+        2:
+          type: NONE
+          id: N/A
+          amount: 1
 ```
 | Key | Description | Acceptable Inputs |
 | --- | ----------- | ----------------- |
