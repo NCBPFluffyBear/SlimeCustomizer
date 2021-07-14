@@ -54,16 +54,22 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.4</version>
                 <configuration>
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
                             <shadedPattern>io.ncbpfluffybear.slimecustomizer.bstats</shadedPattern>
+                            <excludes>
+                                <exclude>META-INF/*.MF</exclude>
+                            </excludes>
                         </relocation>
                         <relocation>
                             <pattern>dev.j3fftw.extrautils</pattern>
                             <shadedPattern>io.ncbpfluffybear.slimecustomizer.extrautils</shadedPattern>
+                            <excludes>
+                                <exclude>META-INF/*.MF</exclude>
+                            </excludes>
                         </relocation>
                     </relocations>
                 </configuration>
