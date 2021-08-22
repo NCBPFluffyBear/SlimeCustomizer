@@ -1,0 +1,13 @@
+#READ THE WIKI BEFORE CREATING AN ITEM! https://github.com/NCBPFluffyBear/SlimeCustomizer/blob/master/README.md
+EXAMPLE_DROP:
+  category: slime_customizer
+  item-type: CUSTOM
+  item-name: "&bExample Drop"
+  item-lore:
+  - "&7This is an example mob-drop!"
+  - "&cExample drops are not obtainable"
+  item-id: STICK
+  item-amount: 1
+  mob: GHAST
+  chance: 0
+  recipe-display-item: GHAST_SPAWN_EGG

@@ -9,6 +9,7 @@ import io.ncbpfluffybear.slimecustomizer.registration.Categories;
 import io.ncbpfluffybear.slimecustomizer.registration.Generators;
 import io.ncbpfluffybear.slimecustomizer.registration.Items;
 import io.ncbpfluffybear.slimecustomizer.registration.Machines;
+import io.ncbpfluffybear.slimecustomizer.registration.MobDrops;
 import io.ncbpfluffybear.slimecustomizer.registration.SolarGenerators;
 import lombok.SneakyThrows;
 import me.mrCookieSlime.Slimefun.Lists.RecipeType;
@@ -34,7 +35,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -49,8 +49,8 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
     public static SlimeCustomizer instance;
     public static File itemsFolder;
 
-    public static HashMap<ItemStack[], Pair<RecipeType, String>> existingRecipes = new HashMap<>();
-    public static HashMap<String, Category> allCategories = new HashMap<>();
+    public static final HashMap<ItemStack[], Pair<RecipeType, String>> existingRecipes = new HashMap<>();
+    public static final HashMap<String, Category> allCategories = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -69,49 +69,26 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
 
         /* File generation */
         final File categoriesFile = new File(getInstance().getDataFolder(), "categories.yml");
-        if (!categoriesFile.exists()) {
-            try {
-                Files.copy(this.getClass().getResourceAsStream("/categories.yml"), categoriesFile.toPath());
-            } catch (IOException e) {
-                getInstance().getLogger().log(Level.SEVERE, "Failed to copy default categories.yml file", e);
-            }
-        }
+        copyFile(categoriesFile, "categories");
 
         final File itemsFile = new File(getInstance().getDataFolder(), "items.yml");
-        if (!itemsFile.exists()) {
-            try {
-                Files.copy(this.getClass().getResourceAsStream("/items.yml"), itemsFile.toPath());
-            } catch (IOException e) {
-                getInstance().getLogger().log(Level.SEVERE, "Failed to copy default items.yml file", e);
-            }
-        }
+        copyFile(itemsFile, "items");
+
+        final File mobDropsFile = new File(getInstance().getDataFolder(), "mob-drops.yml");
+        copyFile(mobDropsFile, "mob-drops");
+
 
         final File machinesFile = new File(getInstance().getDataFolder(), "machines.yml");
-        if (!machinesFile.exists()) {
-            try {
-                Files.copy(this.getClass().getResourceAsStream("/machines.yml"), machinesFile.toPath());
-            } catch (IOException e) {
-                getInstance().getLogger().log(Level.SEVERE, "Failed to copy default machines.yml file", e);
-            }
-        }
+        copyFile(machinesFile, "machines");
+
 
         final File generatorsFile = new File(getInstance().getDataFolder(), "generators.yml");
-        if (!generatorsFile.exists()) {
-            try {
-                Files.copy(this.getClass().getResourceAsStream("/generators.yml"), generatorsFile.toPath());
-            } catch (IOException e) {
-                getInstance().getLogger().log(Level.SEVERE, "Failed to copy default generators.yml file", e);
-            }
-        }
+        copyFile(generatorsFile, "generators");
+
 
         final File solarGeneratorsFile = new File(getInstance().getDataFolder(), "solar-generators.yml");
-        if (!solarGeneratorsFile.exists()) {
-            try {
-                Files.copy(this.getClass().getResourceAsStream("/solar-generators.yml"), solarGeneratorsFile.toPath());
-            } catch (IOException e) {
-                getInstance().getLogger().log(Level.SEVERE, "Failed to copy default solar-generators.yml file", e);
-            }
-        }
+        copyFile(solarGeneratorsFile, "solar-generators");
+
 
         /*
         final File passiveMachinesFile = new File(getInstance().getDataFolder(), "passive-machines.yml");
@@ -139,6 +116,7 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
         Config generators = new Config(this, "generators.yml");
         Config solarGenerators = new Config(this, "solar-generators.yml");
         Config passiveMachines = new Config(this, "passive-machines.yml");
+        Config mobDrops = new Config(this, "mob-drops.yml");
 
         this.getCommand("slimecustomizer").setTabCompleter(new SCTabCompleter());
 
@@ -147,8 +125,8 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
         if (!Items.register(items)) {return;}
         if (!Machines.register(machines)) {return;}
         if (!Generators.register(generators)) {return;}
-        // if (!PassiveMachines.register(passiveMachines)) {return;}
         if (!SolarGenerators.register(solarGenerators)) {return;}
+        if (!MobDrops.register(mobDrops)) {return;}
         Bukkit.getPluginManager().registerEvents(new Events(), instance);
     }
 
@@ -343,6 +321,16 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
     private void giveItems(Player p, SlimefunItem sfItem, int amount) {
         p.getInventory().addItem(new CustomItem(sfItem.getRecipeOutput(), amount));
         Utils.send(p, "&bYou have given " + p.getName() + " &a" + amount + " &7\"&b" + sfItem.getItemName() + "&7\"");
+    }
+
+    private void copyFile(File file, String name) {
+        if (!file.exists()) {
+            try {
+                Files.copy(this.getClass().getResourceAsStream("/"+ name + ".yml"), file.toPath());
+            } catch (IOException e) {
+                getInstance().getLogger().log(Level.SEVERE, "Failed to copy default " + name + ".yml file", e);
+            }
+        }
     }
 
     @Override

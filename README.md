@@ -396,6 +396,38 @@ EXAMPLE_SOLAR_GENERATOR:
 | crafting-recipe.#.id | The id of the item based on the type. |
 | crafting-recipe.#.amount | The amount of the item to use in the recipe. Enhanced Crafting Table only accepts 1. |
 
+##### Adding your mob drops
+1. Open the `mob-drops.yml` file, located at `\<YOUR_SERVER_LOCATION>\plugins\SlimeCustomizer`
+   The table below explains what each key does.
+
+```yaml
+#READ THE WIKI BEFORE CREATING AN ITEM! https://github.com/NCBPFluffyBear/SlimeCustomizer/blob/master/README.md
+EXAMPLE_DROP:
+  category: slime_customizer
+  item-type: CUSTOM
+  item-name: "&bExample Drop"
+  item-lore:
+    - "&7This is an example mob-drop!"
+    - "&cExample drops are not obtainable"
+  item-id: STICK
+  item-amount: 1
+  mob: GHAST
+  chance: 0
+  recipe-display-item: GHAST_SPAWN_EGG
+```
+| Key | Description | Acceptable Inputs |
+| --- | ----------- | ----------------- |
+| EXAMPLE_DROP | The ID of the mob drop. You can change this key! |
+| category | The key of the category that this drop will appear under in the Slimefun guide.
+| item-type | The type of item that you are registering. | CUSTOM (You define the name, lore, and type), SAVEDITEM (Load key from saveditems folder) |
+| item-name | The name of the item. (Custom item types only) |
+| item-lore | The lore of the item. (Custom item types only) |
+| item-id | The vanilla ID or skull hash of the material this item will use. |
+| item-amount | The amount of this item dropped. |
+| mob | The type of mob that drops this item |
+| chance | The chance that the specified mob drops the item (0 - 100) |
+| recipe-display-item | The item that appears in the Slimefun guide's instructions on how to obtain this drop |
+
 #### Using skull textures
 Want to use a skull texture instead of a block? Replace `block-type` with `SKULL<hash>`. Example provided in the generators config.
 How to create a skull hash: https://bukkit.org/threads/create-your-own-custom-head-texture.424286/

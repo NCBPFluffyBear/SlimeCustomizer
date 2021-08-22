@@ -27,7 +27,6 @@ import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
 import me.mrCookieSlime.Slimefun.cscorelib2.protection.ProtectableAction;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -44,6 +43,8 @@ import java.util.Map;
  * @author TheBusyBiscuit
  * @author NCBPFluffyBear
  */
+
+@SuppressWarnings("deprecation")
 public abstract class SCAGenerator extends AbstractEnergyProvider implements MachineProcessHolder<FuelOperation> {
     private static final int[] border = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 13, 31, 36, 37, 38, 39, 40, 41, 42, 43, 44 };
     private static final int[] border_in = { 9, 10, 11, 12, 18, 21, 27, 28, 29, 30 };
