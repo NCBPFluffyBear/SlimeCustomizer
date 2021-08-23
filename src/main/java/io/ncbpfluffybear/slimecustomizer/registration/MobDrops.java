@@ -56,7 +56,7 @@ public class MobDrops {
                 return false;
             }
 
-            if (chance <= 0 || chance > 100) {
+            if (chance < 0 || chance > 100) {
                 Utils.disable("The chance for " + dropKey + " must be a between 1 and 100 (inclusive)!");
                 return false;
             }
