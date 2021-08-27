@@ -153,7 +153,9 @@ public class Utils {
             return null;
         }
 
-        SlimeCustomizer.existingRecipes.put(recipe, new Pair<>(recipeType, key));
+        if (!(recipeType == RecipeType.NULL)) {
+            SlimeCustomizer.existingRecipes.put(recipe, new Pair<>(recipeType, key));
+        }
         return recipe;
     }
 
