@@ -22,6 +22,9 @@ assignees: ''
 <!-- Take a look at your Server Log and please provide any error reports you can find via https://pastebin.com/ -->
 <!-- We may discard your Issue if you just post it here, as it's unreadable for us. Please use Pastebin! -->
 
+## Config Files
+<!-- Attach your config files via Pastebin here. -->
+
 ## Environment (Required)
 <!-- We may also close your Issue if you are not providing the exact version numbers. -->
 <!-- "latest" IS NOT A VERSION NUMBER. -->
