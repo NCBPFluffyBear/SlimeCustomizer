@@ -1,11 +1,11 @@
 package io.ncbpfluffybear.slimecustomizer;
 
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.ncbpfluffybear.slimecustomizer.objects.SCMenu;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import org.bukkit.NamespacedKey;
@@ -40,7 +40,7 @@ public class Events implements Listener {
     private static final int[] INPUT_SLOTS = {28, 29};
     private static final int[] OUTPUT_SLOTS = {33, 34};
 
-    private static final NamespacedKey SF_KEY = new NamespacedKey(SlimefunPlugin.getPlugin(SlimefunPlugin.class),
+    private static final NamespacedKey SF_KEY = new NamespacedKey(Slimefun.getPlugin(Slimefun.class),
         "slimefun_item");
 
     @EventHandler
@@ -69,7 +69,7 @@ public class Events implements Listener {
         // At this point, it has been confirmed that the player clicked a dual input or output item and is in a sf guide
         Player p = (Player) e.getWhoClicked();
         SlimefunItem machine = SlimefunItem.getByItem(e.getClickedInventory().getItem(MACHINE_GUIDE_DISPLAY_SLOT));
-        SCMenu menu = new SCMenu(SlimeCustomizer.getInstance(), SlimefunPlugin.getLocalization().getMessage(p, "guide" +
+        SCMenu menu = new SCMenu(Slimefun.getLocalization().getMessage(p, "guide" +
             ".title.main"));
         SurvivalSlimefunGuide guide = new SurvivalSlimefunGuide(false);
         if (!(machine instanceof AContainer)) {
@@ -89,8 +89,12 @@ public class Events implements Listener {
         for (int i : OUTPUT_BORDER) {
             menu.replaceExistingItem(i, ChestMenuUtils.getOutputSlotTexture());
         }
-        menu.pushItems(recipes.get(index).getInput(), INPUT_SLOTS);
-        menu.pushItems(recipes.get(index).getOutput(), OUTPUT_SLOTS);
+        for (ItemStack item : recipes.get(index).getInput()) {
+            menu.pushItem(item, INPUT_SLOTS);
+        }
+        for (ItemStack item : recipes.get(index).getOutput()) {
+            menu.pushItem(item, OUTPUT_SLOTS);
+        }
 
         menu.setBackgroundNonClickable(true);
         menu.setPlayerInventoryClickable(false);

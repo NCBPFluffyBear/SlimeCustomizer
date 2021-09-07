@@ -1,12 +1,12 @@
 package io.ncbpfluffybear.slimecustomizer;
 
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.cscorelib2.collections.Pair;
-import me.mrCookieSlime.Slimefun.cscorelib2.config.Config;
-import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
-import me.mrCookieSlime.Slimefun.cscorelib2.skull.SkullItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -122,13 +122,13 @@ public class Utils {
                     recipe[i] = new ItemStack(vanillaMat, amount);
                 }
             } else if (type.equalsIgnoreCase("SLIMEFUN")) {
-                SlimefunItem sfMat = SlimefunItem.getByID(material);
+                SlimefunItem sfMat = SlimefunItem.getById(material);
                 if (sfMat == null) {
                     Utils.disable("Crafting ingredient " + configIndex + " for " + key
                         + " is not a valid Slimefun ID!");
                     return null;
                 } else {
-                    recipe[i] = new CustomItem(sfMat.getItem().clone(), amount);
+                    recipe[i] = new CustomItemStack(sfMat.getItem().clone(), amount);
                 }
             } else if (type.equalsIgnoreCase("SAVEDITEM")) {
                 recipe[i] = retrieveSavedItem(material, amount, true);
@@ -174,7 +174,7 @@ public class Utils {
         } else if (material != null && material.isBlock()) {
             block = new ItemStack(material);
         } else if (materialString.startsWith("SKULL")) {
-            block = SkullItem.fromHash(materialString.replace("SKULL", ""));
+            block = SlimefunUtils.getCustomHead(materialString.replace("SKULL", ""));
         }
 
         return block;
@@ -307,8 +307,8 @@ public class Utils {
         }
     }
 
-    public static Category getCategory(String str, String key) {
-        Category category = SlimeCustomizer.allCategories.get(str);
+    public static ItemGroup getCategory(String str, String key) {
+        ItemGroup category = SlimeCustomizer.allCategories.get(str);
         if (category == null) {
             disable(str + " is not a valid category for " + key + "!");
         }

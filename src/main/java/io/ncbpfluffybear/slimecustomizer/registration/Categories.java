@@ -1,11 +1,11 @@
 package io.ncbpfluffybear.slimecustomizer.registration;
 
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.ncbpfluffybear.slimecustomizer.SlimeCustomizer;
 import io.ncbpfluffybear.slimecustomizer.Utils;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.cscorelib2.config.Config;
-import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
-import me.mrCookieSlime.Slimefun.cscorelib2.skull.SkullItem;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -39,11 +39,11 @@ public class Categories {
             } else if (material != null) {
                 item = new ItemStack(material);
             } else if (materialString.startsWith("SKULL")) {
-                item = SkullItem.fromHash(materialString.replace("SKULL", ""));
+                item = SlimefunUtils.getCustomHead(materialString.replace("SKULL", ""));
             }
 
-            Category tempCategory = new Category(new NamespacedKey(SlimeCustomizer.getInstance(), categoryKey),
-                new CustomItem(item, name));
+            ItemGroup tempCategory = new ItemGroup(new NamespacedKey(SlimeCustomizer.getInstance(), categoryKey),
+                new CustomItemStack(item, name));
 
             AtomicBoolean disable = new AtomicBoolean(false);
             SlimeCustomizer.allCategories.forEach((key, storedCategory) -> {

@@ -96,14 +96,14 @@
         <dependency>
             <groupId>com.github.Slimefun</groupId>
             <artifactId>Slimefun4</artifactId>
-            <version>RC-25</version>
+            <version>RC-27</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.github.Slimefun-Addon-Community</groupId>
             <artifactId>ExtraUtils</artifactId>
-            <version>42c0913e0a</version>
+            <version>73e76ac06c</version>
         </dependency>
 
         <dependency>

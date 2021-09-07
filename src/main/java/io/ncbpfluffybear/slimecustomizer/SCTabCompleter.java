@@ -1,11 +1,11 @@
 package io.ncbpfluffybear.slimecustomizer;
 
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunPlugin;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.ncbpfluffybear.slimecustomizer.objects.CustomGenerator;
 import io.ncbpfluffybear.slimecustomizer.objects.CustomMachine;
 import io.ncbpfluffybear.slimecustomizer.objects.CustomSCItem;
 import io.ncbpfluffybear.slimecustomizer.objects.WindowsExplorerStringComparator;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -76,7 +76,7 @@ public class SCTabCompleter implements TabCompleter {
     }
 
     private List<String> getSCItems() {
-        List<SlimefunItem> items = SlimefunPlugin.getRegistry().getEnabledSlimefunItems();
+        List<SlimefunItem> items = Slimefun.getRegistry().getEnabledSlimefunItems();
         List<String> list = new ArrayList<>(items.size());
 
         for (SlimefunItem item : items) {

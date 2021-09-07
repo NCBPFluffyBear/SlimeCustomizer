@@ -1,14 +1,14 @@
 package io.ncbpfluffybear.slimecustomizer.registration;
 
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.ncbpfluffybear.slimecustomizer.SlimeCustomizer;
 import io.ncbpfluffybear.slimecustomizer.Utils;
 import io.ncbpfluffybear.slimecustomizer.objects.SCMobDrop;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import me.mrCookieSlime.Slimefun.cscorelib2.config.Config;
-import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
-import me.mrCookieSlime.Slimefun.cscorelib2.skull.SkullItem;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -39,7 +39,7 @@ public class MobDrops {
             int amount;
             int chance;
 
-            Category category = Utils.getCategory(drops.getString(dropKey + ".category"), dropKey);
+            ItemGroup category = Utils.getCategory(drops.getString(dropKey + ".category"), dropKey);
             if (category == null) {return false;}
 
             try {
@@ -72,7 +72,7 @@ public class MobDrops {
                 } else if (material != null) {
                     item = new ItemStack(material);
                 } else if (materialString.startsWith("SKULL")) {
-                    item = SkullItem.fromHash(materialString.replace("SKULL", ""));
+                    item = SlimefunUtils.getCustomHead(materialString.replace("SKULL", ""));
                 }
 
                 item.setAmount(amount);
@@ -120,7 +120,7 @@ public class MobDrops {
             /* Crafting recipe */
             ItemStack[] recipe = new ItemStack[] {
                     null, null, null,
-                    null, new CustomItem(eggMaterial, "&b" + Utils.capitalize(mobType), "&7Kill a "
+                    null, new CustomItemStack(eggMaterial, "&b" + Utils.capitalize(mobType), "&7Kill a "
                     + Utils.capitalize(mobType))
             };
 

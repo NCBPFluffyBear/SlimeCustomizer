@@ -1,14 +1,14 @@
 package io.ncbpfluffybear.slimecustomizer.objects;
 
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
 import io.ncbpfluffybear.slimecustomizer.Utils;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import me.mrCookieSlime.Slimefun.cscorelib2.collections.Pair;
-import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,9 +25,9 @@ import java.util.List;
  */
 public class CustomMachine extends AContainer implements RecipeDisplayItem {
 
-    public static final ItemStack MULTI_INPUT_ITEM = new CustomItem(
+    public static final ItemStack MULTI_INPUT_ITEM = new CustomItemStack(
         Material.LIME_STAINED_GLASS_PANE, "&aMultiple Inputs", "", "&7> Click to view the items");
-    public static final ItemStack MULTI_OUTPUT_ITEM = new CustomItem(
+    public static final ItemStack MULTI_OUTPUT_ITEM = new CustomItemStack(
         Material.LIME_STAINED_GLASS_PANE, "&aMultiple Outputs", "", "&7> Click to view the items");
 
     private final String id;
@@ -36,7 +36,7 @@ public class CustomMachine extends AContainer implements RecipeDisplayItem {
     private final int energyBuffer;
     private final HashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes;
 
-    public CustomMachine(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,
+    public CustomMachine(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,
                          String id, Material progressItem, int energyConsumption, int energyBuffer,
                          HashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes) {
         super(category, item, recipeType, recipe);

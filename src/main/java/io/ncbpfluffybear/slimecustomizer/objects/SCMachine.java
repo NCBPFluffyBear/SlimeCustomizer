@@ -1,11 +1,11 @@
 package io.ncbpfluffybear.slimecustomizer.objects;
 
 import dev.j3fftw.extrautils.utils.LoreBuilderDynamic;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.ncbpfluffybear.slimecustomizer.Utils;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
-import me.mrCookieSlime.Slimefun.cscorelib2.config.Config;
-import me.mrCookieSlime.Slimefun.cscorelib2.skull.SkullItem;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -64,7 +64,7 @@ public class SCMachine {
         } else if (material != null && material.isBlock()) {
             block = new ItemStack(material);
         } else if (materialString.startsWith("SKULL")) {
-            block = SkullItem.fromHash(materialString.replace("SKULL", ""));
+            block = SlimefunUtils.getCustomHead(materialString.replace("SKULL", ""));
         }
 
         /* Progress bar type */

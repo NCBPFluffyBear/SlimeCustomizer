@@ -1,8 +1,10 @@
 package io.ncbpfluffybear.slimecustomizer;
 
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.updater.GitHubBuildsUpdater;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import io.github.thebusybiscuit.slimefun4.utils.PatternUtils;
 import io.ncbpfluffybear.slimecustomizer.objects.SCMenu;
 import io.ncbpfluffybear.slimecustomizer.objects.WindowsExplorerStringComparator;
 import io.ncbpfluffybear.slimecustomizer.registration.Categories;
@@ -12,13 +14,10 @@ import io.ncbpfluffybear.slimecustomizer.registration.Machines;
 import io.ncbpfluffybear.slimecustomizer.registration.MobDrops;
 import io.ncbpfluffybear.slimecustomizer.registration.SolarGenerators;
 import lombok.SneakyThrows;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.cscorelib2.collections.Pair;
-import me.mrCookieSlime.Slimefun.cscorelib2.config.Config;
-import me.mrCookieSlime.Slimefun.cscorelib2.item.CustomItem;
-import me.mrCookieSlime.Slimefun.cscorelib2.updater.GitHubBuildsUpdater;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,7 +49,7 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
     public static File itemsFolder;
 
     public static final HashMap<ItemStack[], Pair<RecipeType, String>> existingRecipes = new HashMap<>();
-    public static final HashMap<String, Category> allCategories = new HashMap<>();
+    public static final HashMap<String, ItemGroup> allCategories = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -166,15 +165,18 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
                 return true;
             }
 
-            SlimefunItem sfItem = SlimefunItem.getByID(args[2].toUpperCase());
+            SlimefunItem sfItem = SlimefunItem.getById(args[2].toUpperCase());
             if (sfItem == null) {
                 Utils.send(sender, "&cThat Slimefun item could not be found!");
                 return true;
             }
 
-            int amount = 1;
-            if (PatternUtils.NUMERIC.matcher(args[3]).matches()) {
+            int amount;
+
+            try {
                 amount = Integer.parseInt(args[3]);
+            } catch (NumberFormatException ignored) {
+                amount = 1;
             }
 
             giveItems(target, sfItem, amount);
@@ -203,7 +205,7 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
                     }
 
                     int page = 1;
-                    SCMenu menu = new SCMenu(this, "&a&lSaved Items");
+                    SCMenu menu = new SCMenu("&a&lSaved Items");
                     menu.setSize(54);
                     populateMenu(menu, items, page, p);
                     menu.setPlayerInventoryClickable(false);
@@ -226,11 +228,14 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
                     return true;
                 }
 
-                int amount = 1;
+                int amount;
 
-                if (PatternUtils.NUMERIC.matcher(args[3]).matches()) {
+                try {
                     amount = Integer.parseInt(args[3]);
+                } catch (NumberFormatException ignored) {
+                    amount = 1;
                 }
+                
                 ItemStack item = Utils.retrieveSavedItem(itemName, amount, false);
                 if (item != null) {
                     HashMap<Integer, ItemStack> leftovers = target.getInventory().addItem(item);
@@ -280,7 +285,7 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
                 im.setLore(lore);
                 item.setItemMeta(im);
                 menu.replaceExistingItem(i, item);
-                menu.addMenuClickHandler(i, (pl, s, is, ic, action) -> {
+                menu.addMenuClickHandler(i, (pl, s, is, action) -> {
                     HashMap<Integer, ItemStack> leftovers = p.getInventory().addItem(getItemOrNull(items, itemIndex));
                     for (ItemStack leftover : leftovers.values()) {
                         p.getWorld().dropItem(p.getLocation(), leftover);
@@ -291,16 +296,16 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
         }
 
         if (page != 1) {
-            menu.replaceExistingItem(46, new CustomItem(Material.LIME_STAINED_GLASS_PANE, "&aPrevious Page"));
-            menu.addMenuClickHandler(46, (pl, s, is, ic, action) -> {
+            menu.replaceExistingItem(46, new CustomItemStack(Material.LIME_STAINED_GLASS_PANE, "&aPrevious Page"));
+            menu.addMenuClickHandler(46, (pl, s, is, action) -> {
                 populateMenu(menu, items, page - 1, p);
                 return false;
             });
         }
 
         if (getItemOrNull(items, 45 * page) != null) {
-            menu.replaceExistingItem(52, new CustomItem(Material.LIME_STAINED_GLASS_PANE, "&aNext Page"));
-            menu.addMenuClickHandler(52, (pl, s, is, ic, action) -> {
+            menu.replaceExistingItem(52, new CustomItemStack(Material.LIME_STAINED_GLASS_PANE, "&aNext Page"));
+            menu.addMenuClickHandler(52, (pl, s, is, action) -> {
                 populateMenu(menu, items, page + 1, p);
                 return false;
             });
@@ -319,7 +324,7 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
     }
 
     private void giveItems(Player p, SlimefunItem sfItem, int amount) {
-        p.getInventory().addItem(new CustomItem(sfItem.getRecipeOutput(), amount));
+        p.getInventory().addItem(new CustomItemStack(sfItem.getRecipeOutput(), amount));
         Utils.send(p, "&bYou have given " + p.getName() + " &a" + amount + " &7\"&b" + sfItem.getItemName() + "&7\"");
     }
 

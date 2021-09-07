@@ -1,10 +1,10 @@
 package io.ncbpfluffybear.slimecustomizer.objects;
 
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RandomMobDrop;
-import me.mrCookieSlime.Slimefun.Lists.RecipeType;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.api.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -15,12 +15,12 @@ public class SCMobDrop extends SlimefunItem implements RandomMobDrop {
 
     private final int chance;
 
-    public SCMobDrop(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, int chance) {
+    public SCMobDrop(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, int chance) {
         super(category, item, recipeType, recipe);
         this.chance = chance;
     }
 
-    public SCMobDrop(Category category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,
+    public SCMobDrop(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,
                      ItemStack recipeOutput, int chance
     ) {
         super(category, item, recipeType, recipe, recipeOutput);

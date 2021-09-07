@@ -1,13 +1,13 @@
 package io.ncbpfluffybear.slimecustomizer.registration;
 
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
 import io.ncbpfluffybear.slimecustomizer.SlimeCustomizer;
 import io.ncbpfluffybear.slimecustomizer.Utils;
 import io.ncbpfluffybear.slimecustomizer.objects.CustomMachine;
 import io.ncbpfluffybear.slimecustomizer.objects.SCMachine;
-import me.mrCookieSlime.Slimefun.Objects.Category;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import me.mrCookieSlime.Slimefun.cscorelib2.collections.Pair;
-import me.mrCookieSlime.Slimefun.cscorelib2.config.Config;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -32,7 +32,7 @@ public class Machines {
             SCMachine machine = new SCMachine(machines, machineKey, "machine");
             if (!machine.isValid()) {return false;}
 
-            Category category = Utils.getCategory(machines.getString(machineKey + ".category"), machineKey);
+            ItemGroup category = Utils.getCategory(machines.getString(machineKey + ".category"), machineKey);
             if (category == null) {return false;}
 
             // Update to new dual input/output system
@@ -126,7 +126,7 @@ public class Machines {
                                 }
                             }
                         } else if (type.equalsIgnoreCase("SLIMEFUN")) {
-                            SlimefunItem sfMat = SlimefunItem.getByID(material);
+                            SlimefunItem sfMat = SlimefunItem.getById(material);
                             if (sfMat == null) {
                                 Utils.disable("The " + Utils.toOrdinal(transIndex) + " " + slot + " ingredient for recipe " + recipeKey + " for " + machineKey
                                     + " is not a valid Slimefun ID!");
