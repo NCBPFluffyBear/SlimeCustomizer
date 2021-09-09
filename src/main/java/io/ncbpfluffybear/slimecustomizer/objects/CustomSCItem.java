@@ -4,6 +4,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -12,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author NCBPFluffyBear
  */
-public class CustomSCItem extends SlimefunItem {
+public class CustomSCItem extends SlimefunItem implements NotPlaceable {
 
     public CustomSCItem(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe, ItemStack output) {
         super(category, item, recipeType, recipe, output);
