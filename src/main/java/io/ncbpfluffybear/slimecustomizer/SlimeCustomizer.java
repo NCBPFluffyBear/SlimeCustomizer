@@ -184,16 +184,22 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
                 amount = 1;
             }
 
-            giveItems(target, sfItem, amount);
+            giveItems(sender, target, sfItem, amount);
 
-        } else if (sender instanceof Player && args[0].equals("getsaveditem")) {
-            Player p = (Player) sender;
+        } else if (args[0].equals("getsaveditem") && args.length > 1) {
 
-            if (!Utils.checkPermission(p, "slimecustomizer.admin")) {
+            if (sender instanceof Player && !Utils.checkPermission((Player) sender, "slimecustomizer.admin")) {
                 return true;
             }
 
             if (args[1].equals("gui")) {
+
+                if (!(sender instanceof Player)) {
+                    Utils.send(sender, "&4This command can only be executed in game");
+                    return true;
+                }
+
+                Player p = (Player) sender;
                 List<Pair<String, ItemStack>> items = new ArrayList<>();
                 items.add(new Pair<>(null, null));
 
@@ -221,15 +227,15 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
 
             } else {
                 if (args.length < 4) {
-                    Utils.send(p, "&c/sc getsaveditem gui | <item_id> <player_name> <amount>");
+                    Utils.send(sender, "&c/sc getsaveditem gui | <item_id> <player_name> <amount>");
                     return true;
                 }
 
-                String itemName = args[1];
+                String savedID = args[1];
 
                 Player target = Bukkit.getPlayer(args[2]);
                 if (target == null) {
-                    Utils.send(p, "&cThat player could not be found!");
+                    Utils.send(sender, "&cThat player could not be found!");
                     return true;
                 }
 
@@ -241,14 +247,17 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
                     amount = 1;
                 }
                 
-                ItemStack item = Utils.retrieveSavedItem(itemName, amount, false);
+                ItemStack item = Utils.retrieveSavedItem(savedID, amount, false);
                 if (item != null) {
                     HashMap<Integer, ItemStack> leftovers = target.getInventory().addItem(item);
                     for (ItemStack leftover : leftovers.values()) {
                         target.getWorld().dropItem(target.getLocation(), leftover);
                     }
+
+                    Utils.send(sender, "&bYou have given " + target.getName() + " &a" + amount + " &bof &7\"&a" +
+                            savedID + "&7\"");
                 } else {
-                    Utils.send(p, "&cThat saveditem could not be found!");
+                    Utils.send(sender, "&cThat saveditem could not be found!");
                 }
             }
         } else {
@@ -328,9 +337,9 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
         return item;
     }
 
-    private void giveItems(Player p, SlimefunItem sfItem, int amount) {
+    private void giveItems(CommandSender s, Player p, SlimefunItem sfItem, int amount) {
         p.getInventory().addItem(new CustomItemStack(sfItem.getRecipeOutput(), amount));
-        Utils.send(p, "&bYou have given " + p.getName() + " &a" + amount + " &7\"&b" + sfItem.getItemName() + "&7\"");
+        Utils.send(s, "&bYou have given " + p.getName() + " &a" + amount + " &7\"&b" + sfItem.getItemName() + "&7\"");
     }
 
     private void copyFile(File file, String name) {
