@@ -173,9 +173,14 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
 
             int amount;
 
-            try {
-                amount = Integer.parseInt(args[3]);
-            } catch (NumberFormatException ignored) {
+            if (args[3] != null) {
+
+                try {
+                    amount = Integer.parseInt(args[3]);
+                } catch (NumberFormatException ignored) {
+                    amount = 1;
+                }
+            } else {
                 amount = 1;
             }
 
