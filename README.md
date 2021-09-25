@@ -59,6 +59,7 @@ EXAMPLE_ITEM:
   - "&cSlimeCustomizer now supports multiline lore!"
   item-id: STICK
   item-amount: 1
+  placeable: false
   crafting-recipe-type: ENHANCED_CRAFTING_TABLE
   crafting-recipe:
     1:
@@ -108,6 +109,7 @@ EXAMPLE_ITEM:
 | item-lore | The lore of the item. |
 | item-id | The vanilla ID or skull hash of the material this item will use. |
 | item-amount | The amount of this item crafted at once. |
+| placeable | If the item is placeable or not. DO NOT MAKE TOOLS PLACEABLE! |
 | crafting-recipe-type | The multiblock machine that this item will be crafted in. | ENHANCED_CRAFTING_TABLE, MAGIC_WORKBENCH, ARMOR_FORGE, COMPRESSOR, PRESSURE_CHAMBER, SMELTERY, ORE_CRUSHER, GRIND_STONE, NONE (Can not be crafted with multiblocks) |
 | crafting-recipe.#.type | The type of item. | NONE (Empty spot, all other fields will be ignored), SLIMEFUN, SAVEDITEM |
 | crafting-recipe.#.id | The id of the item. |

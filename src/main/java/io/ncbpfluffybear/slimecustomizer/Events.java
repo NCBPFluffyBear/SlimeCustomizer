@@ -1,11 +1,13 @@
 package io.ncbpfluffybear.slimecustomizer;
 
+import io.github.thebusybiscuit.slimefun4.api.events.PlayerRightClickEvent;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.ncbpfluffybear.slimecustomizer.objects.SCMenu;
+import io.ncbpfluffybear.slimecustomizer.objects.SCNotPlaceable;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import org.bukkit.NamespacedKey;
@@ -13,6 +15,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -20,6 +23,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * {@link Events} holds all the events for
@@ -100,6 +104,19 @@ public class Events implements Listener {
         menu.setPlayerInventoryClickable(false);
 
         menu.open(p);
+    }
+
+    @EventHandler
+    private void onSCNonPlaceablePlace(PlayerRightClickEvent e) {
+        Optional<SlimefunItem> optSFItem = e.getSlimefunItem();
+
+        if (!optSFItem.isPresent()) {
+            return;
+        }
+
+        if (optSFItem.get() instanceof SCNotPlaceable) {
+            e.cancel();
+        }
     }
 
 }

@@ -8,6 +8,7 @@ EXAMPLE_ITEM:
   - "&cSlimeCustomizer now supports multiline lore!"
   item-id: STICK
   item-amount: 1
+  placeable: false
   crafting-recipe-type: ENHANCED_CRAFTING_TABLE
   crafting-recipe:
     1:

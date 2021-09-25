@@ -183,8 +183,7 @@ public class Utils {
     public static void updateLoreFormat(Config config, String key, String machineType) {
         String path = key + "." + machineType + "-lore";
         if (config.getStringList(path).toString().equals("[]")) {
-            Bukkit.getLogger().log(Level.WARNING, "Your " + key + " was using the old lore system! Attempting to " +
-                "reformat it now... " +
+            Bukkit.getLogger().log(Level.WARNING, "Your " + key + " was reformatted to use the new lore system!" +
                 "Read " + Links.ADDING_YOUR_ITEM + " to learn how to use multiline lore!");
 
             String lore = config.getString(path);
@@ -250,13 +249,26 @@ public class Utils {
                     config.setValue(transportPath + ".2.id", "N/A");
                     config.setValue(transportPath + ".2.amount", 1);
 
-                    Bukkit.getLogger().log(Level.WARNING, "Your " + key + " was using the old input/output system! " +
-                        "Attempting to reformat it now... " +
+                    Bukkit.getLogger().log(Level.WARNING, "Your " + key + " was reformatted to use the new " +
+                            "input/output system! " +
                         "Read " + Links.ADDING_YOUR_MACHINE + " to learn what this new format does!");
                 }
             }
         }
 
+        config.save();
+    }
+
+    public static void updatePlaceableOption(Config config, String key) {
+        if (config.getValue(key + ".placeable") != null) {
+            return;
+        }
+
+        config.setValue(key + ".placeable", false);
+        Bukkit.getLogger().log(Level.WARNING, "Your " + key + " was reformatted to have a placeable option! " +
+                "Read " + Links.ADDING_YOUR_ITEM + " to learn what this new option does!");
+        Bukkit.getLogger().log(Level.SEVERE, "This option is false by default, so if you have a block you need " +
+                "to be placeable, change this immediately!");
         config.save();
     }
 

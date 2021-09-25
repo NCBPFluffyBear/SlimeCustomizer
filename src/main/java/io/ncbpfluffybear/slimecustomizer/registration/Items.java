@@ -8,6 +8,7 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
+import io.ncbpfluffybear.slimecustomizer.objects.NPCustomSCItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -30,11 +31,15 @@ public class Items {
                     "Did you forget to set up the plugin?");
             }
 
+            // Update config for new "placeable" option
+            Utils.updatePlaceableOption(items, itemKey);
+
             String itemType = items.getString(itemKey + ".item-type");
             String materialString = items.getString(itemKey + ".item-id").toUpperCase();
             SlimefunItemStack tempStack;
             ItemStack item = null;
             int amount;
+            boolean placeable = items.getBoolean(itemKey + ".placeable");
 
             ItemGroup category = Utils.getCategory(items.getString(itemKey + ".category"), itemKey);
             if (category == null) {return false;}
@@ -45,7 +50,6 @@ public class Items {
                 Utils.disable("The item-amount for " + itemKey + " must be a positive integer!");
                 return false;
             }
-
 
             if (itemType.equalsIgnoreCase("CUSTOM")) {
 
@@ -94,12 +98,22 @@ public class Items {
             ItemStack[] recipe = Utils.buildCraftingRecipe(items, itemKey, recipeType);
             if (recipe == null) {return false;}
 
-            if (itemType.equalsIgnoreCase("CUSTOM")) {
-                new CustomSCItem(category, tempStack, recipeType, recipe
-                ).register(SlimeCustomizer.getInstance());
+            if (placeable) {
+                if (itemType.equalsIgnoreCase("CUSTOM")) {
+                    new CustomSCItem(category, tempStack, recipeType, recipe
+                    ).register(SlimeCustomizer.getInstance());
+                } else {
+                    new CustomSCItem(category, tempStack, recipeType, recipe, item
+                    ).register(SlimeCustomizer.getInstance());
+                }
             } else {
-                new CustomSCItem(category, tempStack, recipeType, recipe, item
-                ).register(SlimeCustomizer.getInstance());
+                if (itemType.equalsIgnoreCase("CUSTOM")) {
+                    new NPCustomSCItem(category, tempStack, recipeType, recipe
+                    ).register(SlimeCustomizer.getInstance());
+                } else {
+                    new NPCustomSCItem(category, tempStack, recipeType, recipe, item
+                    ).register(SlimeCustomizer.getInstance());
+                }
             }
 
             Utils.notify("Item " + itemKey + " has been registered!");
