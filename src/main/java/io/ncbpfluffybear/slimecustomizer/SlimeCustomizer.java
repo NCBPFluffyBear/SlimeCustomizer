@@ -286,6 +286,10 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
             ItemStack item = getItemOrNull(items, itemIndex);
             if (item != null) {
                 ItemMeta im = item.getItemMeta();
+                if (im == null) {
+                    Utils.notify("An item has no metadata! Is it corrupted? " + items.get(itemIndex).getFirstValue());
+                    continue;
+                }
                 List<String> lore = im.getLore();
 
                 if (lore == null) {
