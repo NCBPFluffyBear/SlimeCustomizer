@@ -75,7 +75,7 @@ public class Events implements Listener {
         SlimefunItem machine = SlimefunItem.getByItem(e.getClickedInventory().getItem(MACHINE_GUIDE_DISPLAY_SLOT));
         SCMenu menu = new SCMenu(Slimefun.getLocalization().getMessage(p, "guide" +
             ".title.main"));
-        SurvivalSlimefunGuide guide = new SurvivalSlimefunGuide(false);
+        SurvivalSlimefunGuide guide = new SurvivalSlimefunGuide(false, false);
         if (!(machine instanceof AContainer)) {
             return;
         }
