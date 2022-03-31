@@ -55,9 +55,23 @@ softdepend:
   - HeadLimiter
   - SlimeXpansion
   - Barrels
-  - SlimeXpansion
   - ClayTech
   - FNAmplifications
+  - SMG
+  - EMC2
+  - Simple-Storage
+  - AlchimiaVitae
+  - SlimeTinker
+  - PotionExpansion
+  - FlowerPower
+  - Galactifun
+  - Element-Manipulation
+  - CrystamaeHistoria
+  - DankTech2
+  - Networks
+  - VillagerUtil
+  - MissileWarfare
+  - SensibleToolbox
 
   ## This value is automatically replaced by the version specified in your pom.xml file, do not change this.
 version: ${project.version}
