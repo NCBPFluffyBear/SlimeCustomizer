@@ -475,48 +475,62 @@ For `type`, use `SAVEDITEM` and for `id`, use the file name.
 
 ## Compatability with other Slimefun addons
 To be compatible with items from other addons, SlimeCustomizer softdepends the following:
-- ChestTerminal
-- ColoredEnderChests
-- DyedBackpacks
-- EcoPower
-- ElectricSpawners
-- ExoticGarden
-- ExtraGear
-- ExtraHeads
-- HotbarPets
-- luckyblocks-sf
-- PrivateStorage
-- SlimefunOreChunks
-- SlimyTreeTaps
-- SoulJars
-- CommandOverride
-- CS-CoreLib
-- EmeraldEnchants2
-- QuickMarket
-- QuickSell
-- RankPrefixPlus
-- LiteXpansion
-- MobCapturer
-- SoundMuffler
-- ExtraTools
-- TranscEndence
-- Liquid
-- SFCalc
-- SlimefunWarfare
-- Slimy-Power-Suits
-- FluffyMachines
-- SlimeCustomizer
-- SlimyRepair
-- InfinityExpansion
-- FoxyMachines
-- GlobalWarming
-- DynaTech
-- GeneticChickengineering
-- HeadLimiter
-- SlimeXpansion
-- Barrels
-- SlimeXpansion
-- ClayTech
+  - ChestTerminal
+  - ColoredEnderChests
+  - DyedBackpacks
+  - EcoPower
+  - ElectricSpawners
+  - ExoticGarden
+  - ExtraGear
+  - ExtraHeads
+  - HotbarPets
+  - luckyblocks-sf
+  - PrivateStorage
+  - SlimefunOreChunks
+  - SlimyTreeTaps
+  - SoulJars
+  - CommandOverride
+  - CS-CoreLib
+  - EmeraldEnchants2
+  - QuickMarket
+  - QuickSell
+  - RankPrefixPlus
+  - LiteXpansion
+  - MobCapturer
+  - SoundMuffler
+  - ExtraTools
+  - TranscEndence
+  - Liquid
+  - SFCalc
+  - SlimefunWarfare
+  - Slimy-Power-Suits
+  - FluffyMachines
+  - SlimyRepair
+  - InfinityExpansion
+  - FoxyMachines
+  - GlobalWarming
+  - DynaTech
+  - GeneticChickengineering
+  - HeadLimiter
+  - SlimeXpansion
+  - Barrels
+  - ClayTech
+  - FNAmplifications
+  - SMG
+  - EMC2
+  - Simple-Storage
+  - AlchimiaVitae
+  - SlimeTinker
+  - PotionExpansion
+  - FlowerPower
+  - Galactifun
+  - Element-Manipulation
+  - CrystamaeHistoria
+  - DankTech2
+  - Networks
+  - VillagerUtil
+  - MissileWarfare
+  - SensibleToolbox
 
 It is highly unlikely that new addons will be added to this list. If you are making a new addon or own a private addon and wish to it in SlimeCustomizer, add the following to your `plugin.yml`
 ```yaml
