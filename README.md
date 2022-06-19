@@ -460,6 +460,8 @@ For `type`, use `SAVEDITEM` and for `id`, use the file name.
 - The speed/time and energy production/consumption that you configure may not line up exactly in game depending in your Slimefun tick delay. The lore is adaptive to show you to correct values according to real time.
 - When the `type` for the crafting recipes or machine inputs/outputs is set to NONE, all of the fields below it can be omitted.
 - If you are updating SlimeCustomizer and new keys have been added, they may appear in different spots than in the examples provided above. Feel free to move them around.
+- Names and lore can be colored using [standard Minecraft chat color codes](https://htmlcolorcodes.com/minecraft-color-codes/). Instead of using `§`, use `&` before the color code. Ex: `&4&lSlimeCustomizer` will display "SlimeCustomizer" in red (`&4`) and bold (`&l`).
+- Hex color codes are also supported. Ex: To make the word "text" appear in the color `#123456`, use `&x&1&2&3&4&5&6text`, where the combination starts with `&x` and each follwing hex value has a `&` in front of it.
 
 ## Permissions
 | **Permission** | **Description** |
