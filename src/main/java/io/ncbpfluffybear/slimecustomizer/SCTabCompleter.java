@@ -49,6 +49,9 @@ public class SCTabCompleter implements TabCompleter {
                         break;
                     case 4:
                         Collections.addAll(options, "1", "2", "4", "8", "16", "32", "64");
+                        break;
+                    default:
+                        break;
                 }
             } else if (args[0].equals("getsaveditem") && player.hasPermission("slimecustomizer.admin")) {
                 if (args.length == 2) {

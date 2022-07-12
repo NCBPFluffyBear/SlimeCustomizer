@@ -15,7 +15,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -44,8 +43,10 @@ public class Events implements Listener {
     private static final int[] INPUT_SLOTS = {28, 29};
     private static final int[] OUTPUT_SLOTS = {33, 34};
 
-    private static final NamespacedKey SF_KEY = new NamespacedKey(Slimefun.getPlugin(Slimefun.class),
-        "slimefun_item");
+    private static final NamespacedKey SF_KEY = new NamespacedKey(
+        Slimefun.getPlugin(Slimefun.class),
+        "slimefun_item"
+    );
 
     @EventHandler
     public void onDualRecipeClick(InventoryClickEvent e) {

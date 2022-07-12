@@ -2,18 +2,19 @@ package io.ncbpfluffybear.slimecustomizer.objects;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
 public class CustomPassiveMachine extends SlimefunItem implements EnergyNetComponent {
@@ -22,8 +23,15 @@ public class CustomPassiveMachine extends SlimefunItem implements EnergyNetCompo
     private final int capacity;
     private final List<ItemStack> products;
 
-    public CustomPassiveMachine(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,
-                                String name, int capacity, List<ItemStack> products) {
+    @ParametersAreNonnullByDefault
+    public CustomPassiveMachine(ItemGroup category,
+                                SlimefunItemStack item,
+                                RecipeType recipeType,
+                                ItemStack[] recipe,
+                                String name,
+                                int capacity,
+                                List<ItemStack> products
+    ) {
         super(category, item, recipeType, recipe);
 
         this.name = name;
@@ -34,7 +42,7 @@ public class CustomPassiveMachine extends SlimefunItem implements EnergyNetCompo
 
             @Override
             public void init() {
-
+                // Unrequired
             }
 
             @Override
@@ -73,8 +81,18 @@ public class CustomPassiveMachine extends SlimefunItem implements EnergyNetCompo
         return EnergyNetComponentType.CONSUMER;
     }
 
+
+
+    public String getName() {
+        return name;
+    }
+
+    public List<ItemStack> getProducts() {
+        return products;
+    }
+
     @Override
     public int getCapacity() {
-        return 0;
+        return capacity;
     }
 }

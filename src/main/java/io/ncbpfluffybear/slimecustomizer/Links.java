@@ -6,7 +6,11 @@ package io.ncbpfluffybear.slimecustomizer;
  *
  * @author NCBPFluffyBear
  */
-public class Links {
+public final class Links {
+
+    private Links() {
+        throw new IllegalStateException("Utility class");
+    }
 
     private static final String PREFIX = "https://github.com/NCBPFluffyBear/SlimeCustomizer#";
 

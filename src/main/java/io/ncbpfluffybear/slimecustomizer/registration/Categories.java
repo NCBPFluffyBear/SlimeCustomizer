@@ -1,15 +1,16 @@
 package io.ncbpfluffybear.slimecustomizer.registration;
 
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
-import io.ncbpfluffybear.slimecustomizer.SlimeCustomizer;
-import io.ncbpfluffybear.slimecustomizer.Utils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import io.ncbpfluffybear.slimecustomizer.SlimeCustomizer;
+import io.ncbpfluffybear.slimecustomizer.Utils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -18,9 +19,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author NCBPFluffyBear
  */
-public class Categories {
+public final class Categories {
 
-    public static boolean register(Config categories) {
+    private Categories() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    public static boolean register(@Nonnull Config categories) {
         if (categories.getKeys().isEmpty()) {
             Utils.disable("No categories were found! Please add and use a category from categories.yml");
             return false;
@@ -46,7 +51,7 @@ public class Categories {
                 new CustomItemStack(item, name));
 
             AtomicBoolean disable = new AtomicBoolean(false);
-            SlimeCustomizer.allCategories.forEach((key, storedCategory) -> {
+            SlimeCustomizer.getAllCategories().forEach((key, storedCategory) -> {
                 if (key.equalsIgnoreCase(categoryKey)) {
                     Utils.disable("The category " + categoryKey + " has already been registered!");
                     disable.set(true);
@@ -56,7 +61,7 @@ public class Categories {
                 return false;
             }
 
-            SlimeCustomizer.allCategories.put(categoryKey, tempCategory);
+            SlimeCustomizer.getAllCategories().put(categoryKey, tempCategory);
             Utils.notify("Category " + categoryKey + " has been registered!");
 
         }

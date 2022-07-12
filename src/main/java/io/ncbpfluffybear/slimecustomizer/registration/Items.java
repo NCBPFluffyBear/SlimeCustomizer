@@ -1,18 +1,19 @@
 package io.ncbpfluffybear.slimecustomizer.registration;
 
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.ncbpfluffybear.slimecustomizer.SlimeCustomizer;
 import io.ncbpfluffybear.slimecustomizer.Utils;
 import io.ncbpfluffybear.slimecustomizer.objects.CustomSCItem;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import io.ncbpfluffybear.slimecustomizer.objects.NPCustomSCItem;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -22,12 +23,16 @@ import java.util.logging.Level;
  *
  * @author NCBPFluffyBear
  */
-public class Items {
+public final class Items {
 
-    public static boolean register(Config items) {
+    private Items() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    public static boolean register(@Nonnull Config items) {
         for (String itemKey : items.getKeys()) {
             if (itemKey.equals("EXAMPLE_ITEM")) {
-                SlimeCustomizer.getInstance().getLogger().log(Level.WARNING, "Your items.yml file still contains the example item! " +
+                SlimeCustomizer.getInstance().getLogger().warning("Your items.yml file still contains the example item! " +
                     "Did you forget to set up the plugin?");
             }
 
@@ -96,7 +101,7 @@ public class Items {
 
             /* Crafting recipe */
             ItemStack[] recipe = Utils.buildCraftingRecipe(items, itemKey, recipeType);
-            if (recipe == null) {return false;}
+            if (recipe.length == 0) {return false;}
 
             if (placeable) {
                 if (itemType.equalsIgnoreCase("CUSTOM")) {

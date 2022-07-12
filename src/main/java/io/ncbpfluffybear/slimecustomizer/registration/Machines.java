@@ -3,14 +3,15 @@ package io.ncbpfluffybear.slimecustomizer.registration;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import io.ncbpfluffybear.slimecustomizer.SlimeCustomizer;
 import io.ncbpfluffybear.slimecustomizer.Utils;
 import io.ncbpfluffybear.slimecustomizer.objects.CustomMachine;
 import io.ncbpfluffybear.slimecustomizer.objects.SCMachine;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.logging.Level;
 
@@ -20,12 +21,16 @@ import java.util.logging.Level;
  *
  * @author NCBPFluffyBear
  */
-public class Machines {
+public final class Machines {
 
-    public static boolean register(Config machines) {
+    private Machines() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    public static boolean register(@Nonnull Config machines) {
         for (String machineKey : machines.getKeys()) {
             if (machineKey.equals("EXAMPLE_MACHINE")) {
-                SlimeCustomizer.getInstance().getLogger().log(Level.WARNING, "Your machines.yml file still contains " +
+                SlimeCustomizer.getInstance().getLogger().warning("Your machines.yml file still contains " +
                     "the example machine! Did you forget to set up the plugin?");
             }
 
