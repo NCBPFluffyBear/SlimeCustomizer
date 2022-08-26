@@ -4,15 +4,19 @@ import io.github.thebusybiscuit.slimefun4.api.player.PlayerProfile;
 import io.github.thebusybiscuit.slimefun4.core.guide.GuideHistory;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.guide.SurvivalSlimefunGuide;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * The {@link SCMenu} is a {@link ChestMenu} for
@@ -28,11 +32,12 @@ public class SCMenu extends ChestMenu {
         super(title);
     }
 
-    public void addBackButton(SurvivalSlimefunGuide guide, Player p, PlayerProfile profile) {
+    @ParametersAreNonnullByDefault
+    public void addBackButton(SurvivalSlimefunGuide guide, Player player, PlayerProfile profile) {
         GuideHistory history = profile.getGuideHistory();
 
         if (history.size() > 1) {
-            this.replaceExistingItem(BACK_BUTTON_SLOT, new CustomItemStack(ChestMenuUtils.getBackButton(p, "", "&fLeft Click: &7Go back to previous Page", "&fShift + left Click: &7Go back to Main Menu")));
+            this.replaceExistingItem(BACK_BUTTON_SLOT, getBackButtonMainMenu(player));
 
             this.addMenuClickHandler(BACK_BUTTON_SLOT, (pl, s, ic, action) -> {
                 if (!action.isRightClicked() && action.isShiftClicked()) {
@@ -44,7 +49,10 @@ public class SCMenu extends ChestMenu {
             });
 
         } else {
-            this.replaceExistingItem(BACK_BUTTON_SLOT, new CustomItemStack(ChestMenuUtils.getBackButton(p, "", ChatColor.GRAY + Slimefun.getLocalization().getMessage(p, "guide.back.guide"))));
+            this.replaceExistingItem(
+                BACK_BUTTON_SLOT,
+                getBackButton(player)
+            );
             this.addMenuClickHandler(BACK_BUTTON_SLOT, (pl, s, is, action) -> {
                 guide.openMainMenu(profile, 1);
                 return false;
@@ -73,8 +81,9 @@ public class SCMenu extends ChestMenu {
         }
     }
 
-    public ItemStack pushItem(ItemStack item, int... slots) {
-        if (item == null || item.getType() == Material.AIR) {
+    @Nullable
+    public ItemStack pushItem(@Nonnull ItemStack item, int... slots) {
+        if (item.getType() == Material.AIR) {
             throw new IllegalArgumentException("Cannot push null or AIR");
         }
 
@@ -120,5 +129,23 @@ public class SCMenu extends ChestMenu {
 
     public void setSize(int size) {
         addItem(size - 1, null);
+    }
+
+    @Nonnull
+    private static CustomItemStack getBackButtonMainMenu(@Nonnull Player player) {
+        return new CustomItemStack(ChestMenuUtils.getBackButton(
+            player,
+            "",
+            "&fLeft Click: &7Go back to previous Page", "&fShift + left Click: &7Go back to Main Menu"
+        ));
+    }
+
+    @Nonnull
+    private static CustomItemStack getBackButton(@Nonnull Player player) {
+        return new CustomItemStack(ChestMenuUtils.getBackButton(
+            player,
+            "",
+            ChatColor.GRAY + Slimefun.getLocalization().getMessage(player, "guide.back.guide")
+        ));
     }
 }

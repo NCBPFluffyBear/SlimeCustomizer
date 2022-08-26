@@ -1,19 +1,20 @@
 package io.ncbpfluffybear.slimecustomizer.registration;
 
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.ncbpfluffybear.slimecustomizer.SlimeCustomizer;
 import io.ncbpfluffybear.slimecustomizer.Utils;
 import io.ncbpfluffybear.slimecustomizer.objects.SCMobDrop;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -23,12 +24,16 @@ import java.util.logging.Level;
  *
  * @author NCBPFluffyBear
  */
-public class MobDrops {
+public final class MobDrops {
 
-    public static boolean register(Config drops) {
+    private MobDrops() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    public static boolean register(@Nonnull Config drops) {
         for (String dropKey : drops.getKeys()) {
             if (dropKey.equals("EXAMPLE_DROP")) {
-                SlimeCustomizer.getInstance().getLogger().log(Level.WARNING, "Your mob-drops.yml file still contains the example mob drop! " +
+                SlimeCustomizer.getInstance().getLogger().warning("Your mob-drops.yml file still contains the example mob drop! " +
                     "Did you forget to set up the plugin?");
             }
 
@@ -73,6 +78,11 @@ public class MobDrops {
                     item = new ItemStack(material);
                 } else if (materialString.startsWith("SKULL")) {
                     item = SlimefunUtils.getCustomHead(materialString.replace("SKULL", ""));
+                }
+
+                if (item == null) {
+                    Utils.disable("The item for " + dropKey + " could not be setup and the reason is unknown");
+                    return false;
                 }
 
                 item.setAmount(amount);

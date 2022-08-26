@@ -1,16 +1,17 @@
 package io.ncbpfluffybear.slimecustomizer.registration;
 
 import dev.j3fftw.extrautils.utils.LoreBuilderDynamic;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import io.ncbpfluffybear.slimecustomizer.SlimeCustomizer;
 import io.ncbpfluffybear.slimecustomizer.Utils;
 import io.ncbpfluffybear.slimecustomizer.objects.CustomSolarGenerator;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,12 +25,16 @@ import java.util.stream.Stream;
  *
  * @author NCBPFluffyBear
  */
-public class SolarGenerators {
+public final class SolarGenerators {
 
-    public static boolean register(Config generators) {
+    private SolarGenerators() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    public static boolean register(@Nonnull Config generators) {
         for (String generatorKey : generators.getKeys()) {
             if (generatorKey.equals("EXAMPLE_SOLAR_GENERATOR")) {
-                SlimeCustomizer.getInstance().getLogger().log(Level.WARNING, "Your solar-generators.yml file still contains" +
+                SlimeCustomizer.getInstance().getLogger().warning("Your solar-generators.yml file still contains" +
                     " the example solar generator! " +
                     "Did you forget to set up the plugin?");
             }
@@ -73,7 +78,7 @@ public class SolarGenerators {
 
             // Crafting recipe
             ItemStack[] recipe = Utils.buildCraftingRecipe(generators, generatorKey, recipeType);
-            if (recipe == null) {return false;}
+            if (recipe.length == 0) {return false;}
 
             // Building lore
             List<String> itemLore = Utils.colorList(Stream.concat(

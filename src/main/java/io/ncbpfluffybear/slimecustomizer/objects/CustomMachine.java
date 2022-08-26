@@ -1,20 +1,22 @@
 package io.ncbpfluffybear.slimecustomizer.objects;
 
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.ncbpfluffybear.slimecustomizer.Utils;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -34,11 +36,19 @@ public class CustomMachine extends AContainer implements RecipeDisplayItem {
     private final ItemStack progressItem;
     private final int energyConsumption;
     private final int energyBuffer;
-    private final HashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes;
+    private final Map<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes;
 
-    public CustomMachine(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,
-                         String id, Material progressItem, int energyConsumption, int energyBuffer,
-                         HashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes) {
+    @ParametersAreNonnullByDefault
+    public CustomMachine(ItemGroup category,
+                         SlimefunItemStack item,
+                         RecipeType recipeType,
+                         ItemStack[] recipe,
+                         String id,
+                         Material progressItem,
+                         int energyConsumption,
+                         int energyBuffer,
+                         Map<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes
+    ) {
         super(category, item, recipeType, recipe);
 
         this.id = id;
@@ -85,6 +95,7 @@ public class CustomMachine extends AContainer implements RecipeDisplayItem {
 
     }
 
+    @Nonnull
     @Override
     public List<ItemStack> getDisplayRecipes() {
         List<ItemStack> displayRecipes = new ArrayList<>(recipes.size() * 2);
@@ -107,6 +118,7 @@ public class CustomMachine extends AContainer implements RecipeDisplayItem {
         return displayRecipes;
     }
 
+    @Nonnull
     @Override
     public String getMachineIdentifier() {
         return id;

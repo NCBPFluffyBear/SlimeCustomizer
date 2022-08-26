@@ -5,12 +5,14 @@ import dev.j3fftw.extrautils.utils.Utils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AGenerator;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +29,16 @@ public class CustomGenerator extends SCAGenerator {
     private final int energyBuffer;
     private final List<MachineFuel> customRecipes;
 
-    public CustomGenerator(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,
-                           Material progressItem, int energyProduction, int energyBuffer,
-                           List<MachineFuel> customRecipes) {
+    @ParametersAreNonnullByDefault
+    public CustomGenerator(ItemGroup category,
+                           SlimefunItemStack item,
+                           RecipeType recipeType,
+                           ItemStack[] recipe,
+                           Material progressItem,
+                           int energyProduction,
+                           int energyBuffer,
+                           List<MachineFuel> customRecipes
+    ) {
         super(category, item, recipeType, recipe);
 
         this.progressItem = new CustomItemStack(progressItem, "");
@@ -43,6 +52,7 @@ public class CustomGenerator extends SCAGenerator {
         registerDefaultFuelTypes();
     }
 
+    @Nonnull
     @Override
     public ItemStack getProgressBar() {
         return progressItem;
@@ -69,6 +79,7 @@ public class CustomGenerator extends SCAGenerator {
         return energyBuffer;
     }
 
+    @Nonnull
     @Override
     public List<ItemStack> getDisplayRecipes() {
         List<ItemStack> displayRecipes = new ArrayList<>(customRecipes.size() * 2);
@@ -91,6 +102,4 @@ public class CustomGenerator extends SCAGenerator {
 
         return displayRecipes;
     }
-
-
 }

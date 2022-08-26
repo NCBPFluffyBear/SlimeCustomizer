@@ -1,22 +1,26 @@
 package io.ncbpfluffybear.slimecustomizer;
 
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
+import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +34,11 @@ import java.util.logging.Level;
  *
  * @author NCBPFluffyBear
  */
-public class Utils {
+public final class Utils {
+
+    private Utils() {
+        throw new IllegalStateException("Utility class");
+    }
 
     private static final NamespacedKey SCKEY = new NamespacedKey(SlimeCustomizer.getInstance(), "slimecustomizer_item");
     private static final List<RecipeType> STACK_LIMITED_MACHINES = new ArrayList<>(Arrays.asList(
@@ -40,11 +48,11 @@ public class Utils {
         RecipeType.MAGIC_WORKBENCH
     ));
 
-    public static void send(CommandSender s, String msg) {
+    public static void send(@Nonnull CommandSender s, @Nonnull String msg) {
         s.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a&l[&aSlimeCustomizer&a&l]&7 " + msg));
     }
 
-    public static boolean checkPermission(Player p, String permission) {
+    public static boolean checkPermission(@Nonnull Player p, @Nonnull String permission) {
         if (!p.hasPermission(permission)) {
             Utils.send(p, "&cYou do not have permission to use this command!");
             return false;
@@ -53,19 +61,21 @@ public class Utils {
         return true;
     }
 
-    public static String color(String str) {
+    @Nonnull
+    public static String color(@Nonnull String str) {
         return ChatColor.translateAlternateColorCodes('&', str);
     }
 
-    public static void notify(String reason) {
-        Bukkit.getLogger().log(Level.INFO, "[SlimeCustomizer] " + ChatColor.GREEN + reason);
+    public static void notify(@Nonnull String reason) {
+        Bukkit.getLogger().info("[SlimeCustomizer] " + ChatColor.GREEN + reason);
     }
 
-    public static void disable(String reason) {
-        Bukkit.getLogger().log(Level.SEVERE, "[SlimeCustomizer] " + reason);
+    public static void disable(@Nonnull String reason) {
+        Bukkit.getLogger().severe("[SlimeCustomizer] " + reason);
         Bukkit.getPluginManager().disablePlugin(SlimeCustomizer.getInstance());
     }
 
+    @ParametersAreNonnullByDefault
     public static boolean checkFitsStackSize(ItemStack item, String slot, String machineKey, String recipeKey) {
         if (item.getAmount() > item.getMaxStackSize()) {
             disable("The " + slot + "ingredient for recipe" + recipeKey + " for " + machineKey
@@ -76,7 +86,8 @@ public class Utils {
     }
 
 
-    public static List<String> colorList(List<String> plainList) {
+    @Nonnull
+    public static List<String> colorList(@Nonnull List<String> plainList) {
         List<String> coloredList = new ArrayList<>();
         for (String s : plainList) {
             coloredList.add(ChatColor.translateAlternateColorCodes('&', s));
@@ -85,6 +96,7 @@ public class Utils {
         return coloredList;
     }
 
+    @Nonnull
     public static ItemStack[] buildCraftingRecipe(Config file, String key, RecipeType recipeType) {
         ItemStack[] recipe = new ItemStack[9];
         for (int i = 0; i < 9; i++) {
@@ -100,14 +112,14 @@ public class Utils {
             } catch (NumberFormatException e) {
                 Utils.disable("Crafting recipe item " + configIndex + " for " + key + " must be a positive " +
                     "integer!");
-                return null;
+                return new ItemStack[0];
             }
 
             // Only certain multiblock machines can use stack sizes larger than 1
             if (STACK_LIMITED_MACHINES.contains(recipeType) && amount > 1) {
                 disable(recipeType.getKey().getKey().toUpperCase() + " can not use items with a greater stack size than 1!" +
                     " Please change the crafting-recipe-type or crafting-recipe.#.amount for " + key + ".");
-                return null;
+                return new ItemStack[0];
             }
 
             if (type.equalsIgnoreCase("NONE")) {
@@ -117,7 +129,7 @@ public class Utils {
                 if (vanillaMat == null) {
                     Utils.disable("Crafting ingredient " + configIndex + " for " + key + " is not a valid " +
                         "vanilla ID!");
-                    return null;
+                    return new ItemStack[0];
                 } else {
                     recipe[i] = new ItemStack(vanillaMat, amount);
                 }
@@ -126,7 +138,7 @@ public class Utils {
                 if (sfMat == null) {
                     Utils.disable("Crafting ingredient " + configIndex + " for " + key
                         + " is not a valid Slimefun ID!");
-                    return null;
+                    return new ItemStack[0];
                 } else {
                     recipe[i] = new CustomItemStack(sfMat.getItem().clone(), amount);
                 }
@@ -135,13 +147,13 @@ public class Utils {
             } else {
                 Utils.disable("Crafting ingredient " + configIndex + " for " + key
                     + " can only have a type of VANILLA, SLIMEFUN, SAVEDITEM, or NONE!");
-                return null;
+                return new ItemStack[0];
             }
         }
 
         AtomicBoolean invalid = new AtomicBoolean(false);
 
-        SlimeCustomizer.existingRecipes.forEach((itemStacks, recipeTypePair) -> {
+        SlimeCustomizer.getExistingRecipes().forEach((itemStacks, recipeTypePair) -> {
             if (Arrays.equals(itemStacks, recipe) && recipeType == recipeTypePair.getFirstValue()) {
                 Utils.disable("The crafting recipe for " + key + " is already being used for "
                     + recipeTypePair.getSecondValue());
@@ -150,15 +162,16 @@ public class Utils {
         });
 
         if (invalid.get()) {
-            return null;
+            return new ItemStack[0];
         }
 
-        if (!(recipeType == RecipeType.NULL)) {
-            SlimeCustomizer.existingRecipes.put(recipe, new Pair<>(recipeType, key));
+        if (recipeType != RecipeType.NULL) {
+            SlimeCustomizer.getExistingRecipes().put(recipe, new Pair<>(recipeType, key));
         }
         return recipe;
     }
 
+    @Nullable
     public static ItemStack getBlockFromConfig(String key, String materialString) {
         if (materialString == null) {
             Utils.disable("The material for " + key + " could not be found!");
@@ -180,10 +193,11 @@ public class Utils {
         return block;
     }
 
+    @ParametersAreNonnullByDefault
     public static void updateLoreFormat(Config config, String key, String machineType) {
         String path = key + "." + machineType + "-lore";
         if (config.getStringList(path).toString().equals("[]")) {
-            Bukkit.getLogger().log(Level.WARNING, "Your " + key + " was reformatted to use the new lore system!" +
+            Bukkit.getLogger().warning("Your " + key + " was reformatted to use the new lore system!" +
                 "Read " + Links.ADDING_YOUR_ITEM + " to learn how to use multiline lore!");
 
             String lore = config.getString(path);
@@ -192,7 +206,7 @@ public class Utils {
         }
     }
 
-    public static void updateCraftingRecipeFormat(Config config, String key) {
+    public static void updateCraftingRecipeFormat(@Nonnull Config config, @Nonnull String key) {
         String path = key + ".crafting-recipe";
         for (int i = 0; i < 9; i++) {
             int recipeIndex = i + 1;
@@ -208,7 +222,7 @@ public class Utils {
         config.save();
     }
 
-    public static void updateCategoryFormat(Config config, String key) {
+    public static void updateCategoryFormat(@Nonnull Config config, @Nonnull String key) {
         String path = key + ".category";
 
         if (config.getString(path) == null) {
@@ -218,7 +232,7 @@ public class Utils {
         config.save();
     }
 
-    public static void updateInputAndOutputFormat(Config config, String key) {
+    public static void updateInputAndOutputFormat(@Nonnull Config config, @Nonnull String key) {
         String path = key + ".recipes";
         for (String recipe : config.getKeys(path)) {
             for (int i = 0; i < 2; i++) {
@@ -249,7 +263,7 @@ public class Utils {
                     config.setValue(transportPath + ".2.id", "N/A");
                     config.setValue(transportPath + ".2.amount", 1);
 
-                    Bukkit.getLogger().log(Level.WARNING, "Your " + key + " was reformatted to use the new " +
+                    Bukkit.getLogger().warning("Your " + key + " was reformatted to use the new " +
                             "input/output system! " +
                         "Read " + Links.ADDING_YOUR_MACHINE + " to learn what this new format does!");
                 }
@@ -259,20 +273,21 @@ public class Utils {
         config.save();
     }
 
-    public static void updatePlaceableOption(Config config, String key) {
+    public static void updatePlaceableOption(@Nonnull Config config, @Nonnull String key) {
         if (config.getValue(key + ".placeable") != null) {
             return;
         }
 
         config.setValue(key + ".placeable", false);
-        Bukkit.getLogger().log(Level.WARNING, "Your " + key + " was reformatted to have a placeable option! " +
+        Bukkit.getLogger().warning("Your " + key + " was reformatted to have a placeable option! " +
                 "Read " + Links.ADDING_YOUR_ITEM + " to learn what this new option does!");
-        Bukkit.getLogger().log(Level.SEVERE, "This option is false by default, so if you have a block you need " +
+        Bukkit.getLogger().severe("This option is false by default, so if you have a block you need " +
                 "to be placeable, change this immediately!");
         config.save();
     }
 
-    public static ItemStack retrieveSavedItem(String id, int amount, boolean disableIfNull) {
+    @Nullable
+    public static ItemStack retrieveSavedItem(@Nonnull String id, int amount, boolean disableIfNull) {
         File serializedItemFile = new File(SlimeCustomizer.getInstance().getDataFolder(), "saveditems/" + id + ".yml");
         if (!serializedItemFile.exists()) {
             if (disableIfNull) {
@@ -286,16 +301,15 @@ public class Utils {
         }
     }
 
-    public static RecipeType getRecipeType(String str, String key) {
+    @Nullable
+    public static RecipeType getRecipeType(@Nullable String str, @Nonnull String key) {
         if (str == null) {
             disable("The crafting-recipe-type for " + key + " has to be a multiblock machine!" );
             return null;
         }
         switch (str) {
-            default:
-                return null;
             case "ENCHANTED_CRAFTING_TABLE":
-                Bukkit.getLogger().log(Level.WARNING, "Hey buddy, it's the ENHANCED crafting table, not ENCHANTED. " +
+                Bukkit.getLogger().warning("Hey buddy, it's the ENHANCED crafting table, not ENCHANTED. " +
                     "Don't worry, I know what you mean. But you should probably fix that.");
                 return RecipeType.ENHANCED_CRAFTING_TABLE;
             case "ENHANCED_CRAFTING_TABLE":
@@ -316,45 +330,58 @@ public class Utils {
                 return RecipeType.GRIND_STONE;
             case "NONE":
                 return RecipeType.NULL;
+            default:
+                disable("The crafting-recipe-type for " + key + " is invalid" );
+                return null;
         }
     }
 
+    @Nullable
     public static ItemGroup getCategory(String str, String key) {
-        ItemGroup category = SlimeCustomizer.allCategories.get(str);
+        ItemGroup category = SlimeCustomizer.getAllCategories().get(str);
         if (category == null) {
             disable(str + " is not a valid category for " + key + "!");
+            return null;
+        } else {
+            return category;
         }
-        return category;
     }
 
-    public static String capitalize(String str) {
+    @Nonnull
+    public static String capitalize(@Nonnull String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 
+    @Nonnull
     public static String toOrdinal(int i) {
         switch (i) {
-            default:
-                return "ERR";
             case 1:
                 return "1st";
             case 2:
                 return "2nd";
+            default:
+                return "ERR";
         }
     }
 
-    public static ItemStack keyItem(ItemStack item, int i) {
+    @Nonnull
+    public static ItemStack keyItem(@Nonnull ItemStack item, int i) {
         ItemMeta meta = item.getItemMeta();
         meta.getPersistentDataContainer().set(SCKEY, PersistentDataType.INTEGER, i);
         item.setItemMeta(meta);
         return item;
     }
 
-    public static boolean isKeyed(ItemStack item) {
+    public static boolean isKeyed(@Nonnull ItemStack item) {
         return item.getItemMeta().getPersistentDataContainer().has(SCKEY, PersistentDataType.INTEGER);
     }
 
-    public static int getItemKey(ItemStack item) {
+    public static int getItemKey(@Nonnull ItemStack item) {
         return item.getItemMeta().getPersistentDataContainer().get(SCKEY, PersistentDataType.INTEGER);
     }
 
+    public static boolean isDaytime(@Nonnull World world) {
+        long time = world.getTime();
+        return !world.hasStorm() && !world.isThundering() && (time < 12300 || time > 23850);
+    }
 }

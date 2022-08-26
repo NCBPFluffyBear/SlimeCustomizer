@@ -1,7 +1,10 @@
 package io.ncbpfluffybear.slimecustomizer.objects;
 
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
+import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemState;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.MachineProcessHolder;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.machines.MachineProcessor;
@@ -10,6 +13,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.electric.AbstractEnergyProvider;
 import io.github.thebusybiscuit.slimefun4.implementation.operations.FuelOperation;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
@@ -17,15 +21,11 @@ import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineFuel;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,6 +34,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +58,7 @@ public abstract class SCAGenerator extends AbstractEnergyProvider implements Mac
     private int energyProducedPerTick = -1;
     private int energyCapacity = -1;
 
+    @ParametersAreNonnullByDefault
     protected SCAGenerator(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(category, item, recipeType, recipe);
 
@@ -86,29 +90,31 @@ public abstract class SCAGenerator extends AbstractEnergyProvider implements Mac
         registerDefaultFuelTypes();
     }
 
+    @Nonnull
     @Override
     public MachineProcessor<FuelOperation> getMachineProcessor() {
         return processor;
     }
 
+    @Nonnull
     protected BlockBreakHandler onBlockBreak() {
         return new SimpleBlockBreakHandler() {
 
             @Override
-            public void onBlockBreak(Block b) {
-                BlockMenu inv = BlockStorage.getInventory(b);
+            public void onBlockBreak(@Nonnull Block block) {
+                BlockMenu inv = BlockStorage.getInventory(block);
 
                 if (inv != null) {
-                    inv.dropItems(b.getLocation(), getInputSlots());
-                    inv.dropItems(b.getLocation(), getOutputSlots());
+                    inv.dropItems(block.getLocation(), getInputSlots());
+                    inv.dropItems(block.getLocation(), getOutputSlots());
                 }
 
-                processor.endOperation(b);
+                processor.endOperation(block);
             }
         };
     }
 
-    private void constructMenu(BlockMenuPreset preset) {
+    private void constructMenu(@Nonnull BlockMenuPreset preset) {
         for (int i : border) {
             preset.addItem(i, ChestMenuUtils.getBackground(), ChestMenuUtils.getEmptyClickHandler());
         }
@@ -152,16 +158,16 @@ public abstract class SCAGenerator extends AbstractEnergyProvider implements Mac
     }
 
     @Override
-    public int getGeneratedOutput(Location l, Config data) {
-        BlockMenu inv = BlockStorage.getInventory(l);
-        FuelOperation operation = processor.getOperation(l);
+    public int getGeneratedOutput(@Nonnull Location location, @Nonnull Config data) {
+        BlockMenu inv = BlockStorage.getInventory(location);
+        FuelOperation operation = processor.getOperation(location);
 
         if (operation != null) {
             if (!operation.isFinished()) {
                 processor.updateProgressBar(inv, 22, operation);
 
                 if (isChargeable()) {
-                    int charge = getCharge(l, data);
+                    int charge = getCharge(location, data);
 
                     if (getCapacity() - charge >= getEnergyProduction()) {
                         operation.addProgress(1);
@@ -186,7 +192,7 @@ public abstract class SCAGenerator extends AbstractEnergyProvider implements Mac
 
                 inv.replaceExistingItem(22, new CustomItemStack(Material.BLACK_STAINED_GLASS_PANE, " "));
 
-                processor.endOperation(l);
+                processor.endOperation(location);
                 return 0;
             }
         } else {
@@ -198,14 +204,14 @@ public abstract class SCAGenerator extends AbstractEnergyProvider implements Mac
                     inv.consumeItem(entry.getKey(), entry.getValue());
                 }
 
-                processor.startOperation(l, new FuelOperation(fuel));
+                processor.startOperation(location, new FuelOperation(fuel));
             }
 
             return 0;
         }
     }
 
-    private boolean isBucket(ItemStack item) {
+    private boolean isBucket(@Nullable ItemStack item) {
         if (item == null) {
             return false;
         }
@@ -214,7 +220,8 @@ public abstract class SCAGenerator extends AbstractEnergyProvider implements Mac
         return item.getType() == Material.LAVA_BUCKET || SlimefunUtils.isItemSimilar(wrapper, SlimefunItems.FUEL_BUCKET, true) || SlimefunUtils.isItemSimilar(wrapper, SlimefunItems.OIL_BUCKET, true);
     }
 
-    private MachineFuel findRecipe(BlockMenu menu, Map<Integer, Integer> found) {
+    @Nullable
+    private MachineFuel findRecipe(@Nonnull BlockMenu menu, @Nonnull Map<Integer, Integer> found) {
         for (MachineFuel fuel : fuelTypes) {
             for (int slot : getInputSlots()) {
                 if (fuel.test(menu.getItemInSlot(slot))) {
@@ -256,6 +263,7 @@ public abstract class SCAGenerator extends AbstractEnergyProvider implements Mac
      *
      * @return This method will return the current instance of {@link SCAGenerator}, so that can be chained.
      */
+    @Nonnull
     public final SCAGenerator setCapacity(int capacity) {
         Validate.isTrue(capacity >= 0, "The capacity cannot be negative!");
 
@@ -275,6 +283,7 @@ public abstract class SCAGenerator extends AbstractEnergyProvider implements Mac
      *
      * @return This method will return the current instance of {@link SCAGenerator}, so that can be chained.
      */
+    @Nonnull
     public final SCAGenerator setEnergyProduction(int energyProduced) {
         Validate.isTrue(energyProduced > 0, "The energy production must be greater than zero!");
 
@@ -283,7 +292,7 @@ public abstract class SCAGenerator extends AbstractEnergyProvider implements Mac
     }
 
     @Override
-    public void register(SlimefunAddon addon) {
+    public void register(@Nonnull SlimefunAddon addon) {
         this.addon = addon;
 
         if (getCapacity() < 0) {

@@ -1,15 +1,18 @@
 package io.ncbpfluffybear.slimecustomizer.objects;
 
 import dev.j3fftw.extrautils.utils.LoreBuilderDynamic;
+import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
+import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.ncbpfluffybear.slimecustomizer.Utils;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,18 +30,23 @@ public class SCMachine {
     private final String key;
     private boolean valid = true;
 
+    @Nonnull
     private final String materialString;
+    @Nonnull
     private final Material progressItem;
+    @Nonnull
     private final String machineType;
     private ItemStack block;
     private int energyConsumption = 0;
     private int energyProduction = 0;
     private int energyBuffer = 0;
+    @Nonnull
     private final ItemStack[] recipe;
+    @Nonnull
     private final RecipeType recipeType;
     private SlimefunItemStack machineStack;
 
-
+    @ParametersAreNonnullByDefault
     public SCMachine(Config config, String key, String machineType) {
         this.config = config;
         this.key = key;
@@ -52,7 +60,7 @@ public class SCMachine {
         recipeType = Utils.getRecipeType(config.getString(key + ".crafting-recipe-type"), key);
         if (recipeType == null) {valid = false;}
         recipe = Utils.buildCraftingRecipe(config, key, recipeType);
-        if (recipe == null) {valid = false;}
+        if (recipe.length == 0) {valid = false;}
         buildMachineStack();
     }
 
@@ -122,6 +130,7 @@ public class SCMachine {
         machineStack.setItemMeta(tempMeta);
     }
 
+    @Nullable
     private String getMachineTag() {
         if (machineType.equalsIgnoreCase("machine")) {
             return "&b" + Utils.capitalize(machineType);
