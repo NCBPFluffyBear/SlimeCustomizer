@@ -1,5 +1,6 @@
 package io.ncbpfluffybear.slimecustomizer.registration;
 
+import io.github.thebusybiscuit.slimefun4.api.items.groups.LockedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.SeasonalItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.SubItemGroup;
@@ -16,8 +17,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.time.DateTimeException;
 import java.time.Month;
+import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * {@link Categories} registers the categories
@@ -97,11 +98,20 @@ public class Categories {
                 }
 
                 tempCategory = new SeasonalItemGroup(key, month, tier, item);
+            } else if (type.equalsIgnoreCase("locked")) {
+                List<String> parents = categories.getStringList(categoryKey + ".parents");
+                NamespacedKey[] parentKeys = new NamespacedKey[parents.size()];
+                int i = 0;
+                for (String parent : parents) {
+                    parentKeys[i++] = NamespacedKey.fromString(parent, SlimeCustomizer.getInstance());
+                }
+
+                tempCategory = new LockedItemGroup(key, item, parentKeys);
             } else {
                 tempCategory = new ItemGroup(key, item);
             }
 
-            Registry.allItemGroups.put(categoryKey, tempCategory);
+            Registry.allItemGroups.put(itemGroupKey, tempCategory);
             Utils.notify("Category " + categoryKey + " has been registered!");
 
         }
