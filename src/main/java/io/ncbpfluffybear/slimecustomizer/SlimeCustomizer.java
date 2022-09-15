@@ -48,9 +48,6 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
     public static SlimeCustomizer instance;
     public static File itemsFolder;
 
-    public static final HashMap<ItemStack[], Pair<RecipeType, String>> existingRecipes = new HashMap<>();
-    public static final HashMap<String, ItemGroup> allCategories = new HashMap<>();
-
     @Override
     public void onEnable() {
 

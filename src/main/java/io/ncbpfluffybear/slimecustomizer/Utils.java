@@ -1,6 +1,7 @@
 package io.ncbpfluffybear.slimecustomizer;
 
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
@@ -141,7 +142,7 @@ public class Utils {
 
         AtomicBoolean invalid = new AtomicBoolean(false);
 
-        SlimeCustomizer.existingRecipes.forEach((itemStacks, recipeTypePair) -> {
+        Registry.existingRecipes.forEach((itemStacks, recipeTypePair) -> {
             if (Arrays.equals(itemStacks, recipe) && recipeType == recipeTypePair.getFirstValue()) {
                 Utils.disable("The crafting recipe for " + key + " is already being used for "
                     + recipeTypePair.getSecondValue());
@@ -154,7 +155,7 @@ public class Utils {
         }
 
         if (!(recipeType == RecipeType.NULL)) {
-            SlimeCustomizer.existingRecipes.put(recipe, new Pair<>(recipeType, key));
+            Registry.existingRecipes.put(recipe, new Pair<>(recipeType, key));
         }
         return recipe;
     }
@@ -320,8 +321,8 @@ public class Utils {
     }
 
     public static ItemGroup getCategory(String str, String key) {
-        ItemGroup category = SlimeCustomizer.allCategories.get(str);
-        if (category == null) {
+        ItemGroup category = Registry.allItemGroups.get(str);
+        if (category == null || category instanceof NestedItemGroup) {
             disable(str + " is not a valid category for " + key + "!");
         }
         return category;

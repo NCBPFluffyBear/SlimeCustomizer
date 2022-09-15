@@ -1,4 +1,25 @@
 #READ THE WIKI BEFORE CREATING A CATEGORY! https://github.com/NCBPFluffyBear/SlimeCustomizer/blob/master/README.md
 slime_customizer:
+  type: normal
   category-name: "&cSlimeCustomizer"
   category-item: REDSTONE_LAMP
+nested_group:
+  type: nested
+  category-name: "&cSlimeCustomizer - Nested"
+  category-item: BEDROCK
+sub_group:
+  type: sub
+  category-name: "&cSlimeCustomizer - Sub"
+  category-item: DIRT
+  parent: nested_group
+seasonal_group:
+  type: seasonal
+  category-name: "&cSlimeCustomizer - Seasonal"
+  category-item: DIAMOND
+  month: 9
+locked_group:
+  type: locked
+  category-name: "&cSlimeCustomizer - Locked"
+  category-item: DIAMOND
+  parents:
+    - slimecustomizer:slime_customizer
