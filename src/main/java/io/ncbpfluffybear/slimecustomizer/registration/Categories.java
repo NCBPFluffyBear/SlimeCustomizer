@@ -66,7 +66,7 @@ public class Categories {
                 return false;
             }
 
-            ItemGroup tempCategory = null;
+            ItemGroup tempCategory;
             NamespacedKey key = new NamespacedKey(SlimeCustomizer.getInstance(), itemGroupKey);
 
             if (type.equalsIgnoreCase("nested")) {
@@ -78,7 +78,7 @@ public class Categories {
                     return false;
                 }
 
-                ItemGroup parentGroup = Registry.allItemGroups.get(type);
+                ItemGroup parentGroup = Registry.allItemGroups.get(parent);
                 if (!(parentGroup instanceof NestedItemGroup)) {
                     Utils.disable("The category " + categoryKey + " has invalid parent group!");
                     return false;
@@ -108,11 +108,12 @@ public class Categories {
 
                 tempCategory = new LockedItemGroup(key, item, parentKeys);
             } else {
+                type = "normal";
                 tempCategory = new ItemGroup(key, item);
             }
 
             Registry.allItemGroups.put(itemGroupKey, tempCategory);
-            Utils.notify("Category " + categoryKey + " has been registered!");
+            Utils.notify("Category " + categoryKey + " (" + type + ") has been registered!");
 
         }
 
