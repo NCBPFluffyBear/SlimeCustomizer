@@ -22,4 +22,4 @@ locked_group:
   category-name: "&cSlimeCustomizer - Locked"
   category-item: DIAMOND
   parents:
-    - slimecustomizer:slime_customizer
+    - slimefun:basic_machines
