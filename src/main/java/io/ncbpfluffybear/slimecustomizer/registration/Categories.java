@@ -118,7 +118,7 @@ public class Categories {
                 tempCategory = new ItemGroup(key, item, tier);
             }
 
-            Registry.allItemGroups.put(itemGroupKey, tempCategory);
+            Registry.allItemGroups.put(categoryKey, tempCategory);
             Utils.notify("Category " + categoryKey + " (" + type + ") has been registered!");
 
         }
