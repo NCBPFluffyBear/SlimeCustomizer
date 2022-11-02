@@ -33,15 +33,50 @@ The table below explains what each key does.
 
 ```yaml
 slime_customizer:
+  type: normal
   category-name: "&cSlimeCustomizer"
   category-item: REDSTONE_LAMP
+nested_group:
+  type: nested
+  category-name: "&cSlimeCustomizer - Nested"
+  category-item: BEDROCK
+sub_group:
+  type: sub
+  category-name: "&cSlimeCustomizer - Sub"
+  category-item: DIRT
+  parent: nested_group
+seasonal_group:
+  type: seasonal
+  category-name: "&cSlimeCustomizer - Seasonal"
+  category-item: DIAMOND
+  month: 9
+locked_group:
+  type: locked
+  category-name: "&cSlimeCustomizer - Locked"
+  category-item: DIAMOND
+  parents:
+    - slimefun:basic_machines
+
 ```
 
 | Key | Description |
 | -------- | -------- |
 | slime_customizer | The ID of the category. You can change this key! |
+| type | The type of the category. |
 | category-name | The name of the category that shows in the Slimefun guide. |
 | category-item | The vanilla material ID or skull hash of the item that this category will use in the Slimefun guide. |
+| tier | A number that indicates the position of this category in Slimefun Guide. Default: 3 |
+
+
+The types of category:
+- `normal`: the category type that all current categories belong to. Can contain items. **This is the default value.**
+- `nested`: a nested category can contain several sub categories, CANNOT contain items.
+- `sub`: a sub category is belong to a nested category, can contain items. **Required fields:**
+  - `parent`: the id of a nested category (from SlimeCustomizer)
+- `seasonal`: a seasonal category will only appear in Slimefun Guide in a specified month. **Required fields:**
+  - `month`: the numerical month. 1 = Jan, 2 = Feb, and so on...
+- `locked`: a locked category cannot be opened until all parent categories are fully unlocked. **Required fields:**
+  - `parents`: the list of keys of parent categories. The key of a category is usually `<plugin name>:<category name>`. For example, the key of Basic Machines in Slimefun is `slimefun:basic_machines`.
 
 
 ##### Adding your item
