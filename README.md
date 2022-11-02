@@ -76,7 +76,7 @@ The types of category:
 - `seasonal`: a seasonal category will only appear in Slimefun Guide in a specified month. **Required fields:**
   - `month`: the numerical month. 1 = Jan, 2 = Feb, and so on...
 - `locked`: a locked category cannot be opened until all parent categories are fully unlocked. **Required fields:**
-  - `parents`: the list of NamespacedKeys of parent categories
+  - `parents`: the list of keys of parent categories. The key of a category is usually `<plugin name>:<category name>`. For example, the key of Basic Machines in Slimefun is `slimefun:basic_machines`.
 
 
 ##### Adding your item
