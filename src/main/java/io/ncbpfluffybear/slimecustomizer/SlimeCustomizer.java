@@ -67,20 +67,17 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
         final File categoriesFile = new File(getInstance().getDataFolder(), "categories.yml");
         copyFile(categoriesFile, "categories");
 
-        final File itemsFile = new File(getInstance().getDataFolder(), "items.yml");
-        copyFile(itemsFile, "items");
-
         final File mobDropsFile = new File(getInstance().getDataFolder(), "mob-drops.yml");
         copyFile(mobDropsFile, "mob-drops");
 
+        final File itemsFile = new File(getInstance().getDataFolder(), "items.yml");
+        copyFile(itemsFile, "items");
 
         final File machinesFile = new File(getInstance().getDataFolder(), "machines.yml");
         copyFile(machinesFile, "machines");
 
-
         final File generatorsFile = new File(getInstance().getDataFolder(), "generators.yml");
         copyFile(generatorsFile, "generators");
-
 
         final File solarGeneratorsFile = new File(getInstance().getDataFolder(), "solar-generators.yml");
         copyFile(solarGeneratorsFile, "solar-generators");
@@ -107,22 +104,22 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
         }
 
         Config categories = new Config(this, "categories.yml");
+        Config mobDrops = new Config(this, "mob-drops.yml");
         Config items = new Config(this, "items.yml");
         Config machines = new Config(this, "machines.yml");
         Config generators = new Config(this, "generators.yml");
         Config solarGenerators = new Config(this, "solar-generators.yml");
         Config passiveMachines = new Config(this, "passive-machines.yml");
-        Config mobDrops = new Config(this, "mob-drops.yml");
 
         this.getCommand("slimecustomizer").setTabCompleter(new SCTabCompleter());
 
         Bukkit.getLogger().log(Level.INFO, "[SlimeCustomizer] " + ChatColor.BLUE + "Setting up custom stuff...");
         if (!Categories.register(categories)) {return;}
+        if (!MobDrops.register(mobDrops)) {return;}
         if (!Items.register(items)) {return;}
         if (!Machines.register(machines)) {return;}
         if (!Generators.register(generators)) {return;}
         if (!SolarGenerators.register(solarGenerators)) {return;}
-        if (!MobDrops.register(mobDrops)) {return;}
         Bukkit.getPluginManager().registerEvents(new Events(), instance);
     }
 
