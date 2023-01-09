@@ -38,6 +38,7 @@ public class SCTabCompleter implements TabCompleter {
                     options.add("saveitem");
                     options.add("give");
                     options.add("getsaveditem");
+                    options.add("categories");
                 }
             } else if (args[0].equals("give") && player.hasPermission("slimecustomizer.admin")) {
                 switch (args.length) {

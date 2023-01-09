@@ -469,6 +469,11 @@ EXAMPLE_DROP:
 Want to use a skull texture instead of a block? Replace `block-type` with `SKULL<hash>`. Example provided in the generators config.
 How to create a skull hash: https://bukkit.org/threads/create-your-own-custom-head-texture.424286/
 
+#### Registering items under existing categories
+You can register any SlimeCustomizer component under preexisting categories.
+1. Use `/sc categories` to find the category's ID, which will be located in the lore.
+2. In any `category` field in SC configuration files, prefix the ID you have located with `existing:`, i.e. `existing:slimefun:misc`.
+
 #### Using custom items
 SlimeCustomizer supports custom items! These can be from other plugins or even renamed/relored items!
 
@@ -509,6 +514,7 @@ For `type`, use `SAVEDITEM` and for `id`, use the file name.
 | saveitem | slimecustomizer.admin | | Saves the item in your hand to a yml file. Read #saving-an-item for more info. |
 | give | slimecustomizer.admin | \<player_name\> \<item_id\> \<amount\> | Used to give an item to a player. |
 | getsaveditem | slimecustomizer.admin | gui / \<item_id\> \<player_name\> \<amount\> | Used to get/give a saveditem. |
+| categories   | slimecustomizer.admin | | Opens a GUI showing the namespacedkeys for all categories  |
 
 ## Compatability with other Slimefun addons
 To be compatible with items from other addons, SlimeCustomizer softdepends the following:
@@ -574,23 +580,5 @@ It is highly unlikely that new addons will be added to this list. If you are mak
 loadbefore:
     - SlimeCustomizer
 ```
-
-## Changelog
-- DEV 1:
-    - Release of SlimeCustomizer!
-    - Build your own [custom machines](#adding-your-machine) and [custom generators](#adding-your-generator)
-- DEV 2:
-    - Updated to no longer require CS-CoreLib
-- DEV 3:
-    - Added multi-line lore support
-    - Added support for other multiblocks (If you have a preexisting config, this key will be smashed onto the bottom. Feel free to reorganize!)
-    - Added support for machines to have 2 inputs and/or outputs
-    - Added [custom items](#adding-your-item)
-    - Added [custom categories](#adding-your-category)
-    - Added new commands
-- DEV 4:
-    - Machine bug fix
-- DEV 5:
-    - Added [solar generators](#adding-your-solar-generator)
 
 Have any questions? Join the Slimefun discord at https://discord.gg/slimefun/

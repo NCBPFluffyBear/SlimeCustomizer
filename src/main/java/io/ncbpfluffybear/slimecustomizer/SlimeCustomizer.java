@@ -2,6 +2,7 @@ package io.ncbpfluffybear.slimecustomizer;
 
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.updater.GitHubBuildsUpdater;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
@@ -116,7 +117,7 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
 
         this.getCommand("slimecustomizer").setTabCompleter(new SCTabCompleter());
 
-        Bukkit.getLogger().log(Level.INFO, "[SlimeCustomizer] " + ChatColor.BLUE + "Setting up custom stuff...");
+        Bukkit.getConsoleSender().sendMessage("[SlimeCustomizer] " + ChatColor.BLUE + "Setting up custom stuff...");
         if (!Categories.register(categories)) {return;}
         if (!Items.register(items)) {return;}
         if (!Machines.register(machines)) {return;}
@@ -257,6 +258,33 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
                     Utils.send(sender, "&cThat saveditem could not be found!");
                 }
             }
+        } else if (sender instanceof Player && args[0].equals("categories")) {
+            Player p = (Player) sender;
+            if (!Utils.checkPermission(p, "slimecustomizer.admin")) {
+                return true;
+            }
+
+            SCMenu menu = new SCMenu("&6Category Namespace Guide");
+            menu.setSize(54);
+            int slot = 0;
+            for (ItemGroup group : Slimefun.getRegistry().getAllItemGroups()) {
+                ItemStack catItem = group.getItem(p).clone();
+                ItemMeta catMeta = catItem.getItemMeta();
+                List<String> catLore = catMeta.getLore();
+
+                catLore.set(catLore.size() - 1, Utils.color(
+                        "&6ID: " + group.getKey().getNamespace() + ":" + group.getKey().getKey())
+                ); // Replaces the "Click to Open" line
+                catMeta.setLore(catLore);
+                catItem.setItemMeta(catMeta);
+                menu.replaceExistingItem(slot, catItem);
+                menu.addMenuClickHandler(slot, ChestMenuUtils.getEmptyClickHandler());
+                slot++;
+            }
+
+            menu.setPlayerInventoryClickable(false);
+            menu.setBackgroundNonClickable(true);
+            menu.open(p);
         } else {
             Utils.send(sender, "&eAll commands can be found at &9" + Links.COMMANDS);
         }

@@ -4,6 +4,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.groups.NestedItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
+import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
@@ -59,7 +60,7 @@ public class Utils {
     }
 
     public static void notify(String reason) {
-        Bukkit.getLogger().log(Level.INFO, "[SlimeCustomizer] " + ChatColor.GREEN + reason);
+        Bukkit.getConsoleSender().sendMessage("[SlimeCustomizer] " + ChatColor.GREEN + reason);
     }
 
     public static void disable(String reason) {
@@ -321,7 +322,23 @@ public class Utils {
     }
 
     public static ItemGroup getCategory(String str, String key) {
-        ItemGroup category = Registry.allItemGroups.get(str);
+        if (str.startsWith("existing:")) { // Add an item to a category from another addon/core sf
+            String[] existingCat = str.substring(9).split(":");
+            if (existingCat.length != 2) {
+                disable("The category for " + key + " has a format issue. Ex: existing:slimefun:misc");
+                return null;
+            }
+            for (ItemGroup itemGroup : Slimefun.getRegistry().getAllItemGroups()) {
+                if (itemGroup.getKey().getNamespace().equals(existingCat[0]) && itemGroup.getKey().getKey().equals(existingCat[1])) {
+                    return itemGroup;
+                }
+            }
+
+            disable(existingCat[0] + ":" + existingCat[1] + " is not a valid existing category for " + key + "!");
+            return null;
+        }
+
+        ItemGroup category = Registry.allItemGroups.get(str); // Add an item to a SC created category
         if (category == null || category instanceof NestedItemGroup) {
             disable(str + " is not a valid category for " + key + "!");
         }
