@@ -64,7 +64,7 @@ public class SCMachine {
         } else if (material != null && material.isBlock()) {
             block = new ItemStack(material);
         } else if (materialString.startsWith("SKULL")) {
-            block = SlimefunUtils.getCustomHead(materialString.replace("SKULL", ""));
+            block = SlimefunUtils.getCustomHead(materialString.replace("SKULL", "").toLowerCase());
         }
 
         /* Progress bar type */
