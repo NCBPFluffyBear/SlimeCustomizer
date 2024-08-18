@@ -4,7 +4,7 @@ import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.updater.GitHubBuildsUpdater;
+import io.github.thebusybiscuit.slimefun4.libraries.dough.updater.BlobBuildUpdater;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
 import io.ncbpfluffybear.slimecustomizer.objects.SCMenu;
 import io.ncbpfluffybear.slimecustomizer.objects.WindowsExplorerStringComparator;
@@ -15,7 +15,6 @@ import io.ncbpfluffybear.slimecustomizer.registration.Machines;
 import io.ncbpfluffybear.slimecustomizer.registration.MobDrops;
 import io.ncbpfluffybear.slimecustomizer.registration.SolarGenerators;
 import lombok.SneakyThrows;
-import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
@@ -58,8 +57,8 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
         // Read something from your config.yml
         Config cfg = new Config(this);
 
-        if (cfg.getBoolean("options.auto-update") && getDescription().getVersion().startsWith("DEV - ")) {
-            new GitHubBuildsUpdater(this, getFile(), "NCBPFluffyBear/SlimeCustomizer/master/").start();
+        if (cfg.getBoolean("options.auto-update") && getDescription().getVersion().startsWith("Dev - ")) {
+            new BlobBuildUpdater(this, getFile(), "SlimeCustomizer", "Dev").start();
         }
 
         final Metrics metrics = new Metrics(this, 9841);
