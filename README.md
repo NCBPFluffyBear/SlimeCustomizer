@@ -29,7 +29,7 @@ Please report all bugs in the [issue tracker](https://github.com/NCBPFluffyBear/
 
 ##### Adding your category
 1. Open the `categories.yml` file, located at `\<YOUR_SERVER_LOCATION>\plugins\SlimeCustomizer`
-The table below explains what each key does.
+The table below explains what each key does. If no items are in your category, it will not appear.
 
 ```yaml
 slime_customizer:
