@@ -13,7 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 
@@ -34,11 +34,11 @@ public class CustomMachine extends AContainer implements RecipeDisplayItem {
     private final ItemStack progressItem;
     private final int energyConsumption;
     private final int energyBuffer;
-    private final HashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes;
+    private final LinkedHashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes;
 
     public CustomMachine(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,
                          String id, Material progressItem, int energyConsumption, int energyBuffer,
-                         HashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes) {
+                         LinkedHashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes) {
         super(category, item, recipeType, recipe);
 
         this.id = id;

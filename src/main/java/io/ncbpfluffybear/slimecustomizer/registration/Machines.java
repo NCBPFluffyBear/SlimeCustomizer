@@ -11,7 +11,7 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.logging.Level;
 
 /**
@@ -38,7 +38,7 @@ public class Machines {
             // Update to new dual input/output system
             Utils.updateInputAndOutputFormat(machines, machineKey);
 
-            HashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipe = new HashMap<>();
+            LinkedHashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipe = new LinkedHashMap<>();
 
             /* Machine recipes */
             for (String recipeKey : machines.getKeys(machineKey + ".recipes")) {

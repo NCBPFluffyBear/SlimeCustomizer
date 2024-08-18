@@ -62,7 +62,7 @@ public class Items {
                 } else if (material != null) {
                     item = new ItemStack(material);
                 } else if (materialString.startsWith("SKULL")) {
-                    item = SlimefunUtils.getCustomHead(materialString.replace("SKULL", ""));
+                    item = SlimefunUtils.getCustomHead(materialString.replace("SKULL", "").toLowerCase());
                 }
 
                 item.setAmount(amount);
