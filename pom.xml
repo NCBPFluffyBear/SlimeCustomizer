@@ -94,7 +94,7 @@
         </dependency>
 
         <dependency>
-            <groupId>io.github.TheBusyBiscuit</groupId>
+            <groupId>com.github.Slimefun</groupId>
             <artifactId>Slimefun4</artifactId>
             <version>RC-37</version>
             <scope>provided</scope>
