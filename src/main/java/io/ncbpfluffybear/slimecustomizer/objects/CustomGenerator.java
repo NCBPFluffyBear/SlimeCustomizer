@@ -32,7 +32,7 @@ public class CustomGenerator extends SCAGenerator {
                            List<MachineFuel> customRecipes) {
         super(category, item, recipeType, recipe);
 
-        this.progressItem = new CustomItemStack(progressItem, "");
+        this.progressItem = CustomItemStack.create(progressItem, "");
         this.energyProduction = energyProduction;
         this.energyBuffer = energyBuffer;
         this.customRecipes = customRecipes;
@@ -75,7 +75,7 @@ public class CustomGenerator extends SCAGenerator {
 
         for (MachineFuel fuel : customRecipes) {
             ItemStack input = fuel.getInput();
-            ItemStack customInput = new CustomItemStack(input, input.getItemMeta().getDisplayName(),
+            ItemStack customInput = CustomItemStack.create(input, input.getItemMeta().getDisplayName(),
                     "&8\u21E8 &7Lasts " + Utils.ticksToSeconds(fuel.getTicks()),
                     LoreBuilderDynamic.powerPerTick(getEnergyProduction()),
                     "&8\u21E8 &e\u26A1 &7" + fuel.getTicks() * getEnergyProduction() + " J in total"
@@ -84,7 +84,7 @@ public class CustomGenerator extends SCAGenerator {
             if (fuel.getOutput() != null) {
                 displayRecipes.add(fuel.getOutput());
             } else {
-                displayRecipes.add(new CustomItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&7No Output"));
+                displayRecipes.add(CustomItemStack.create(Material.LIGHT_GRAY_STAINED_GLASS_PANE, "&7No Output"));
             }
 
         }

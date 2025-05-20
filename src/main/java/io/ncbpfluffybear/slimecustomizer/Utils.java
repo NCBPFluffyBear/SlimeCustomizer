@@ -130,7 +130,7 @@ public class Utils {
                         + " is not a valid Slimefun ID!");
                     return null;
                 } else {
-                    recipe[i] = new CustomItemStack(sfMat.getItem().clone(), amount);
+                    recipe[i] = CustomItemStack.create(sfMat.getItem().clone(), amount);
                 }
             } else if (type.equalsIgnoreCase("SAVEDITEM")) {
                 recipe[i] = retrieveSavedItem(material, amount, true);

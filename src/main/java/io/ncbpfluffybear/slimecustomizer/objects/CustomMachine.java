@@ -25,9 +25,9 @@ import java.util.List;
  */
 public class CustomMachine extends AContainer implements RecipeDisplayItem {
 
-    public static final ItemStack MULTI_INPUT_ITEM = new CustomItemStack(
+    public static final ItemStack MULTI_INPUT_ITEM = CustomItemStack.create(
         Material.LIME_STAINED_GLASS_PANE, "&aMultiple Inputs", "", "&7> Click to view the items");
-    public static final ItemStack MULTI_OUTPUT_ITEM = new CustomItemStack(
+    public static final ItemStack MULTI_OUTPUT_ITEM = CustomItemStack.create(
         Material.LIME_STAINED_GLASS_PANE, "&aMultiple Outputs", "", "&7> Click to view the items");
 
     private final String id;

@@ -138,7 +138,7 @@ public abstract class SCAGenerator extends AbstractEnergyProvider implements Mac
             });
         }
 
-        preset.addItem(22, new CustomItemStack(Material.BLACK_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
+        preset.addItem(22, CustomItemStack.create(Material.BLACK_STAINED_GLASS_PANE, " "), ChestMenuUtils.getEmptyClickHandler());
     }
 
     @Override
@@ -184,7 +184,7 @@ public abstract class SCAGenerator extends AbstractEnergyProvider implements Mac
                     inv.pushItem(operation.getResult().clone(), getOutputSlots());
                 }
 
-                inv.replaceExistingItem(22, new CustomItemStack(Material.BLACK_STAINED_GLASS_PANE, " "));
+                inv.replaceExistingItem(22, CustomItemStack.create(Material.BLACK_STAINED_GLASS_PANE, " "));
 
                 processor.endOperation(l);
                 return 0;
@@ -211,7 +211,7 @@ public abstract class SCAGenerator extends AbstractEnergyProvider implements Mac
         }
 
         ItemStackWrapper wrapper = ItemStackWrapper.wrap(item);
-        return item.getType() == Material.LAVA_BUCKET || SlimefunUtils.isItemSimilar(wrapper, SlimefunItems.FUEL_BUCKET, true) || SlimefunUtils.isItemSimilar(wrapper, SlimefunItems.OIL_BUCKET, true);
+        return item.getType() == Material.LAVA_BUCKET || SlimefunUtils.isItemSimilar(wrapper, SlimefunItems.FUEL_BUCKET.item(), true) || SlimefunUtils.isItemSimilar(wrapper, SlimefunItems.OIL_BUCKET.item(), true);
     }
 
     private MachineFuel findRecipe(BlockMenu menu, Map<Integer, Integer> found) {

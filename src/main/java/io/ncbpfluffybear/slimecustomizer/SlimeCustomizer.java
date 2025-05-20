@@ -338,7 +338,7 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
         }
 
         if (page != 1) {
-            menu.replaceExistingItem(46, new CustomItemStack(Material.LIME_STAINED_GLASS_PANE, "&aPrevious Page"));
+            menu.replaceExistingItem(46, CustomItemStack.create(Material.LIME_STAINED_GLASS_PANE, "&aPrevious Page"));
             menu.addMenuClickHandler(46, (pl, s, is, action) -> {
                 populateMenu(menu, items, page - 1, p);
                 return false;
@@ -346,7 +346,7 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
         }
 
         if (getItemOrNull(items, 45 * page) != null) {
-            menu.replaceExistingItem(52, new CustomItemStack(Material.LIME_STAINED_GLASS_PANE, "&aNext Page"));
+            menu.replaceExistingItem(52, CustomItemStack.create(Material.LIME_STAINED_GLASS_PANE, "&aNext Page"));
             menu.addMenuClickHandler(52, (pl, s, is, action) -> {
                 populateMenu(menu, items, page + 1, p);
                 return false;
@@ -366,7 +366,7 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
     }
 
     private void giveItems(CommandSender s, Player p, SlimefunItem sfItem, int amount) {
-        p.getInventory().addItem(new CustomItemStack(sfItem.getRecipeOutput(), amount));
+        p.getInventory().addItem(CustomItemStack.create(sfItem.getRecipeOutput(), amount));
         Utils.send(s, "&bYou have given " + p.getName() + " &a" + amount + " &7\"&b" + sfItem.getItemName() + "&7\"");
     }
 

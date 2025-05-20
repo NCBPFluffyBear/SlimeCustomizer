@@ -60,7 +60,7 @@ public class Categories {
             } else if (materialString.startsWith("SKULL")) {
                 item = SlimefunUtils.getCustomHead(materialString.replace("SKULL", "").toLowerCase());
             }
-            item = new CustomItemStack(item, name);
+            item = CustomItemStack.create(item, name);
 
             if (Registry.allItemGroups.containsKey(itemGroupKey)) {
                 Utils.disable("The category " + categoryKey + " has already been registered!");

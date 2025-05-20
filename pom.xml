@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.ncbpfluffybear</groupId>
     <artifactId>SlimeCustomizer</artifactId>
-    <version>1.0.0</version>
+    <version>1.21.x-EXPERIMENTAL</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -94,9 +94,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.Slimefun</groupId>
+            <groupId>io.github.TheBusyBiscuit</groupId>
             <artifactId>Slimefun4</artifactId>
-            <version>RC-37</version>
+            <version>3ea21da</version>
             <scope>provided</scope>
         </dependency>
 

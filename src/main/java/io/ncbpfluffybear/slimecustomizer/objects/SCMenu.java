@@ -32,7 +32,7 @@ public class SCMenu extends ChestMenu {
         GuideHistory history = profile.getGuideHistory();
 
         if (history.size() > 1) {
-            this.replaceExistingItem(BACK_BUTTON_SLOT, new CustomItemStack(ChestMenuUtils.getBackButton(p, "", "&fLeft Click: &7Go back to previous Page", "&fShift + left Click: &7Go back to Main Menu")));
+            this.replaceExistingItem(BACK_BUTTON_SLOT, CustomItemStack.create(ChestMenuUtils.getBackButton(p, "", "&fLeft Click: &7Go back to previous Page", "&fShift + left Click: &7Go back to Main Menu"), 1));
 
             this.addMenuClickHandler(BACK_BUTTON_SLOT, (pl, s, ic, action) -> {
                 if (!action.isRightClicked() && action.isShiftClicked()) {
@@ -44,7 +44,7 @@ public class SCMenu extends ChestMenu {
             });
 
         } else {
-            this.replaceExistingItem(BACK_BUTTON_SLOT, new CustomItemStack(ChestMenuUtils.getBackButton(p, "", ChatColor.GRAY + Slimefun.getLocalization().getMessage(p, "guide.back.guide"))));
+            this.replaceExistingItem(BACK_BUTTON_SLOT, CustomItemStack.create(ChestMenuUtils.getBackButton(p, "", ChatColor.GRAY + Slimefun.getLocalization().getMessage(p, "guide.back.guide")), 1));
             this.addMenuClickHandler(BACK_BUTTON_SLOT, (pl, s, is, action) -> {
                 guide.openMainMenu(profile, 1);
                 return false;
@@ -108,7 +108,7 @@ public class SCMenu extends ChestMenu {
         }
 
         if (amount > 0) {
-            return new CustomItemStack(item, amount);
+            return CustomItemStack.create(item, amount);
         } else {
             return null;
         }
