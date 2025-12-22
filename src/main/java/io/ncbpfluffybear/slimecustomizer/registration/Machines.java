@@ -204,10 +204,15 @@ public class Machines {
 
             }
 
+            // Added 'machine.getSpeed()' to the constructor
             new CustomMachine(category, machine.getMachineStack(),
                 machine.getRecipeType(),
                 machine.getRecipe(),
-                machineKey, machine.getProgressItem(), machine.getEnergyConsumption(), machine.getEnergyBuffer(),
+                machineKey, 
+                machine.getProgressItem(), 
+                machine.getEnergyConsumption(), 
+                machine.getEnergyBuffer(),
+                machine.getSpeed(),
                 customRecipe).register(SlimeCustomizer.getInstance());
 
             Utils.notify("Machine " + machineKey + " has been registered!");

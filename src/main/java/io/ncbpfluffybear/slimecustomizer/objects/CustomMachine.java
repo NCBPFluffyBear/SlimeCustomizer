@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-
 /**
  * The {@link CustomMachine} class is a generified
  * {@link AContainer}.
@@ -34,10 +33,13 @@ public class CustomMachine extends AContainer implements RecipeDisplayItem {
     private final ItemStack progressItem;
     private final int energyConsumption;
     private final int energyBuffer;
+    
+    // Changed to double to support decimal multipliers
+    private final double speed; 
     private final LinkedHashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes;
 
     public CustomMachine(ItemGroup category, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,
-                         String id, Material progressItem, int energyConsumption, int energyBuffer,
+                         String id, Material progressItem, int energyConsumption, int energyBuffer, double speed,
                          LinkedHashMap<Pair<ItemStack[], ItemStack[]>, Integer> customRecipes) {
         super(category, item, recipeType, recipe);
 
@@ -45,6 +47,7 @@ public class CustomMachine extends AContainer implements RecipeDisplayItem {
         this.progressItem = new ItemStack(progressItem);
         this.energyConsumption = energyConsumption;
         this.energyBuffer = energyBuffer;
+        this.speed = speed;
         this.customRecipes = customRecipes;
 
         getMachineProcessor().setProgressBar(getProgressBar());
@@ -70,19 +73,31 @@ public class CustomMachine extends AContainer implements RecipeDisplayItem {
 
     @Override
     public int getSpeed() {
+        // We return 1 here because we handle the speed calculation 
+        // directly in the recipe registration below.
         return 1;
+    }
+    
+    // Helper method to get the raw multiplier if needed
+    public double getSpeedMultiplier() {
+        return speed;
     }
 
     @Override
     protected void registerDefaultRecipes() {
-        if (customRecipes == null) {
-            return;
-        }
+        if (customRecipes == null) return;
 
-        customRecipes.forEach((recipe, time) ->
-            registerRecipe(time, recipe.getFirstValue().clone(), recipe.getSecondValue().clone())
-        );
+        customRecipes.forEach((recipe, time) -> {
+            // Calculate new time: Base Time / Speed Multiplier
+            // Example: 10s / 2.0 = 5s (Faster)
+            // Example: 10s / 0.5 = 20s (Slower)
+            int finalTime = (int) (time / speed);
+            
+            // Ensure time is at least 1 second
+            if (finalTime < 1) finalTime = 1;
 
+            registerRecipe(finalTime, recipe.getFirstValue().clone(), recipe.getSecondValue().clone());
+        });
     }
 
     @Override

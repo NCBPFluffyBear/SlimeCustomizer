@@ -263,27 +263,11 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
                 return true;
             }
 
-            SCMenu menu = new SCMenu("&6Category Namespace Guide");
-            menu.setSize(54);
-            int slot = 0;
-            for (ItemGroup group : Slimefun.getRegistry().getAllItemGroups()) {
-                ItemStack catItem = group.getItem(p).clone();
-                ItemMeta catMeta = catItem.getItemMeta();
-                List<String> catLore = catMeta.getLore();
+            // --- FIXED: Use pagination logic instead of dumping everything into one GUI ---
+            List<ItemGroup> allGroups = new ArrayList<>(Slimefun.getRegistry().getAllItemGroups());
+            openCategoriesMenu(p, allGroups, 1);
+            // ----------------------------------------------------------------------------
 
-                catLore.set(catLore.size() - 1, Utils.color(
-                        "&6ID: " + group.getKey().getNamespace() + ":" + group.getKey().getKey())
-                ); // Replaces the "Click to Open" line
-                catMeta.setLore(catLore);
-                catItem.setItemMeta(catMeta);
-                menu.replaceExistingItem(slot, catItem);
-                menu.addMenuClickHandler(slot, ChestMenuUtils.getEmptyClickHandler());
-                slot++;
-            }
-
-            menu.setPlayerInventoryClickable(false);
-            menu.setBackgroundNonClickable(true);
-            menu.open(p);
         } else {
             Utils.send(sender, "&eAll commands can be found at &9" + Links.COMMANDS);
         }
@@ -353,6 +337,80 @@ public class SlimeCustomizer extends JavaPlugin implements SlimefunAddon {
             });
         }
 
+    }
+
+    /**
+     * Handles the pagination for the categories menu.
+     * Prevents IndexOutOfBoundsException when there are too many Slimefun addons.
+     *
+     * @param p The player
+     * @param groups The list of all item groups
+     * @param page The current page number
+     */
+    private void openCategoriesMenu(Player p, List<ItemGroup> groups, int page) {
+        SCMenu menu = new SCMenu("&6Category Namespace Guide (Page " + page + ")");
+        menu.setSize(54);
+
+        int itemsPerPage = 45;
+        int startIndex = (page - 1) * itemsPerPage;
+        int endIndex = Math.min(startIndex + itemsPerPage, groups.size());
+
+        int slot = 0;
+
+        for (int i = startIndex; i < endIndex; i++) {
+            ItemGroup group = groups.get(i);
+            ItemStack catItem = group.getItem(p).clone();
+            ItemMeta catMeta = catItem.getItemMeta();
+
+            if (catMeta != null) {
+                List<String> catLore = catMeta.getLore();
+                if (catLore == null) {
+                    catLore = new ArrayList<>();
+                }
+
+                String namespaceInfo = Utils.color("&6ID: " + group.getKey().getNamespace() + ":" + group.getKey().getKey());
+
+                if (!catLore.isEmpty()) {
+                    catLore.set(catLore.size() - 1, namespaceInfo);
+                } else {
+                    catLore.add(namespaceInfo);
+                }
+                catMeta.setLore(catLore);
+                catItem.setItemMeta(catMeta);
+            }
+
+            menu.replaceExistingItem(slot, catItem);
+            menu.addMenuClickHandler(slot, ChestMenuUtils.getEmptyClickHandler());
+            slot++;
+        }
+
+        // Navigation Buttons
+        if (page > 1) {
+            menu.replaceExistingItem(46, CustomItemStack.create(Material.LIME_STAINED_GLASS_PANE, "&aPrevious Page"));
+            menu.addMenuClickHandler(46, (pl, s, is, action) -> {
+                openCategoriesMenu(p, groups, page - 1);
+                return false;
+            });
+        }
+
+        if (endIndex < groups.size()) {
+            menu.replaceExistingItem(52, CustomItemStack.create(Material.LIME_STAINED_GLASS_PANE, "&aNext Page"));
+            menu.addMenuClickHandler(52, (pl, s, is, action) -> {
+                openCategoriesMenu(p, groups, page + 1);
+                return false;
+            });
+        }
+
+        // Fill background for non-navigation slots in the bottom row
+        for (int i = 45; i < 54; i++) {
+            if (i != 46 && i != 52) {
+                menu.replaceExistingItem(i, ChestMenuUtils.getBackground());
+            }
+        }
+
+        menu.setPlayerInventoryClickable(false);
+        menu.setBackgroundNonClickable(true);
+        menu.open(p);
     }
 
     private ItemStack getItemOrNull(List<Pair<String, ItemStack>> items, int index) {
